@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Files</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>My Files</h1>
+    <table id="filesTable">
+        <thead>
+            <tr>
+                <th>Filename</th>
+                <th>Privacy</th>
+                <th>Size (Bytes)</th>
+                <th>Uploaded At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <a href="/upload">Upload</a> | <a href="/">Home</a>
+
+    <script>
+        async function loadFiles() {
+            const token = getToken();
+            if(!token) { alert("Login required"); window.location.href="/login"; return; }
+
+            const res = await fetch(`${API_URL}/my-files`, {
+                headers: { "Authorization": token }
+            });
+            const files = await res.json();
+
+            const tbody = document.querySelector("#filesTable tbody");
+            tbody.innerHTML = "";
+
+            files.forEach(f => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${f.filename}</td>
+                    <td>${f.privacy}</td>
+                    <td>${f.size}</td>
+                    <td>${new Date(f.uploaded_at).toLocaleString()}</td>
+                    <td>
+                        <a href="${API_URL}/files/${f._id}/download">Download</a> |
+                        <a href="#" onclick="deleteFile('${f._id}')">Delete</a>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function deleteFile(id) {
+            const token = getToken();
+            const res = await fetch(`${API_URL}/files/${id}`, {
+                method: "DELETE",
+                headers: { "Authorization": token }
+            });
+            const result = await res.json();
+            alert(result.message || result.error);
+            loadFiles();
+        }
+
+        loadFiles();
+    </script>
+</body>
+</html>
