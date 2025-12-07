@@ -10,9 +10,10 @@
     <div class="container">
         <h1>Public Downloads</h1>
 
-        <p id="loadingText" aria-live="polite"></p>
+        <p id="loadingText" aria-live="polite">Initializing...</p>
+        <div id="error" role="alert" style="display:none;color:red"></div>
 
-        <table id="downloadsTable" role="table">
+        <table id="downloadsTable" role="table" aria-describedby="loadingText">
             <thead>
                 <tr>
                     <th scope="col">Filename</th>
@@ -23,33 +24,54 @@
             </thead>
             <tbody></tbody>
         </table>
+        <p id="emptyState" style="display:none;">No public files available at the moment.</p>
         <a href="/">Home</a>
     </div>
 
     <script>
         const API_URL = window.API_URL || '';
 
+        function showError(msg){
+            const err = document.getElementById('error');
+            err.innerText = msg;
+            err.style.display = 'block';
+        }
+
         async function loadDownloads() {
-            const res = await fetch(`${API_URL}/public-files`);
-            const files = await res.json();
+            const loadingEl = document.getElementById("loadingText");
+            loadingEl.innerText = "Loading files...";
+            try {
+                const res = await fetch(`${API_URL}/public-files`);
+                if(!res.ok) throw new Error('Network response was not ok');
+                const files = await res.json();
 
-            const tbody = document.querySelector("#downloadsTable tbody");
-            tbody.innerHTML = "";
-            document.getElementById("loadingText").innerText = "Loading files...";
+                const tbody = document.querySelector("#downloadsTable tbody");
+                tbody.innerHTML = "";
+                document.getElementById("emptyState").style.display = files.length ? 'none' : 'block';
 
-            files.forEach(f => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${f.filename}</td>
-                    <td>${f.uploaded_by}</td>
-                    <td>${new Date(f.uploaded_at).toLocaleString()}</td>
-                    <td>
-                        <a href="${API_URL}/files/${f._id}/download">Download</a>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-            document.getElementById("loadingText").innerText = "";
+                files.forEach(f => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${escapeHtml(f.filename)}</td>
+                        <td>${escapeHtml(f.uploaded_by || '—')}</td>
+                        <td>${new Date(f.uploaded_at).toLocaleString()}</td>
+                        <td>
+                            <a class="download-link" href="${API_URL}/files/${f._id}/download">Download</a>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                showError('Failed to load files. ' + err.message);
+            } finally {
+                loadingEl.innerText = "";
+            }
+        }
+
+        // Basic HTML escaping to avoid XSS from filename/uploader fields
+        function escapeHtml(s) {
+            if(!s) return '';
+            return s.replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m]; });
         }
 
         loadDownloads();
