@@ -1,27 +1,224 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Public Downloads</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Manager</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        h2 {
+            margin-top: 40px;
+            margin-bottom: 10px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #fff;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        th {
+            background: #f0f0f0;
+        }
+
+        .btn {
+            padding: 7px 14px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+        }
+
+        .drop-zone {
+            margin-top: 10px;
+            padding: 30px;
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            text-align: center;
+            color: #555;
+            cursor: pointer;
+        }
+
+        .drop-zone.dragover {
+            background: #e8f1ff;
+        }
+
+        #loading {
+            display: none;
+            color: #007bff;
+        }
+    </style>
 </head>
+
 <body>
+<div class="container">
 
-<h1>Public Downloads</h1>
+    <h2>Public Downloads</h2>
 
-<div id="uploadSection">
-    <input type="file" id="fileInput">
-    <button onclick="uploadFile()">Upload</button>
+    <!-- Upload Form -->
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="file">
+        <button type="submit" class="btn">Upload</button>
+        <span id="loading">Uploading...</span>
+    </form>
+
+    <!-- Drag and Drop Area -->
+    <div id="dropZone" class="drop-zone">
+        Drag & Drop your file here or click to select
+    </div>
+
+    <h2>Files</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Filename</th>
+                <th style="width: 180px;">Action</th>
+            </tr>
+        </thead>
+        <tbody id="fileTableBody"></tbody>
+    </table>
+
 </div>
 
-<h2>Files</h2>
-<table id="filesTable">
-    <tr>
-        <th>Filename</th>
-        <th>Action</th>
-    </tr>
-</table>
+<script>
+// ===== Simplified Fetch Wrapper =====
+async function api(url, method = "GET", body = null) {
+    const options = { method };
+    if (body) options.body = body;
 
-<script src="script.js"></script>
+    try {
+        const res = await fetch(url, options);
+        if (!res.ok) throw new Error("Request failed");
+        return await res.json().catch(() => true);
+    } catch (err) {
+        console.error(err);
+        alert("An error occurred. Check server logs.");
+    }
+}
+
+// ===== Load Files =====
+async function loadFiles() {
+    const files = await api("/files/list");
+    const tbody = document.getElementById("fileTableBody");
+    tbody.innerHTML = "";
+
+    if (!files || !files.length) {
+        tbody.innerHTML = `<tr><td colspan="2">No files found.</td></tr>`;
+        return;
+    }
+
+    files.forEach(name => {
+        tbody.innerHTML += `
+            <tr>
+                <td>${name}</td>
+                <td>
+                    <a class="btn" href="/files/download/${name}">Download</a>
+                    <button class="btn btn-delete" onclick="deleteFile('${name}')">Delete</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+// ===== Upload =====
+document.getElementById("uploadForm").addEventListener("submit", async e => {
+    e.preventDefault();
+
+    const input = document.getElementById("fileInput");
+    if (!input.files.length) return alert("Please select a file.");
+
+    const loading = document.getElementById("loading");
+    loading.style.display = "inline";
+
+    const form = new FormData();
+    form.append("file", input.files[0]);
+
+    const res = await api("/files/upload", "POST", form);
+
+    loading.style.display = "none";
+
+    if (res) {
+        alert("Upload successful!");
+        loadFiles();
+    }
+});
+
+// ===== Delete =====
+async function deleteFile(filename) {
+    if (!confirm(`Delete "${filename}" ?`)) return;
+
+    const res = await api(`/files/delete/${filename}`, "DELETE");
+
+    if (res) {
+        alert("File deleted.");
+        loadFiles();
+    }
+}
+
+// ===== Drag & Drop Upload =====
+const drop = document.getElementById("dropZone");
+
+drop.addEventListener("click", () => document.getElementById("fileInput").click());
+
+drop.addEventListener("dragover", e => {
+    e.preventDefault();
+    drop.classList.add("dragover");
+});
+
+drop.addEventListener("dragleave", () => drop.classList.remove("dragover"));
+
+drop.addEventListener("drop", async e => {
+    e.preventDefault();
+    drop.classList.remove("dragover");
+
+    if (!e.dataTransfer.files.length) return;
+
+    const form = new FormData();
+    form.append("file", e.dataTransfer.files[0]);
+
+    const res = await api("/files/upload", "POST", form);
+
+    if (res) {
+        alert("Upload successful!");
+        loadFiles();
+    }
+});
+
+// Init
+loadFiles();
+</script>
 
 </body>
 </html>
