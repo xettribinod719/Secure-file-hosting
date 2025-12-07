@@ -13,13 +13,18 @@
       .btn{display:inline-block;padding:6px 10px;background:#1976d2;color:#fff;text-decoration:none;border-radius:4px}
       .download-btn{background:#2e7d32}
       .error{color:#b00020}
+      .controls{margin-top:12px;display:flex;gap:8px;align-items:center}
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Public Downloads</h1>
 
-        <p id="loadingText" aria-live="polite">Initializing...</p>
+        <div class="controls">
+            <button id="refreshBtn" class="btn" aria-label="Refresh file list">Refresh</button>
+            <p id="loadingText" aria-live="polite" style="margin:0 0 0 8px">Initializing...</p>
+        </div>
+
         <div id="error" role="alert" class="error" style="display:none"></div>
 
         <table id="downloadsTable" role="table" aria-describedby="loadingText">
@@ -46,9 +51,16 @@
             err.style.display = 'block';
         }
 
+        let refreshTimer = null;
+        function debounceLoad(ms=500){
+            if(refreshTimer) clearTimeout(refreshTimer);
+            refreshTimer = setTimeout(()=> loadDownloads(), ms);
+        }
+
         async function loadDownloads() {
             const loadingEl = document.getElementById("loadingText");
             loadingEl.innerText = "Loading files...";
+            document.getElementById('error').style.display='none';
             try {
                 const res = await fetch(`${API_URL}/public-files`);
                 if(!res.ok) throw new Error('Network response was not ok');
@@ -88,6 +100,9 @@
             }
         });
 
+        document.getElementById('refreshBtn').addEventListener('click', ()=> debounceLoad(200));
+
+        // initial load
         loadDownloads();
     </script>
 </body>
