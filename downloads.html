@@ -5,13 +5,22 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Public Downloads</title>
     <link rel="stylesheet" href="/static/style.css">
+    <style>
+      /* local fallback styles if static/style.css missing */
+      .container{max-width:960px;margin:24px auto;padding:16px}
+      table{width:100%;border-collapse:collapse;margin-top:12px}
+      th,td{padding:10px;border:1px solid #ddd;text-align:left}
+      .btn{display:inline-block;padding:6px 10px;background:#1976d2;color:#fff;text-decoration:none;border-radius:4px}
+      .download-btn{background:#2e7d32}
+      .error{color:#b00020}
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Public Downloads</h1>
 
         <p id="loadingText" aria-live="polite">Initializing...</p>
-        <div id="error" role="alert" style="display:none;color:red"></div>
+        <div id="error" role="alert" class="error" style="display:none"></div>
 
         <table id="downloadsTable" role="table" aria-describedby="loadingText">
             <thead>
@@ -68,13 +77,11 @@
             }
         }
 
-        // Basic HTML escaping to avoid XSS from filename/uploader fields
         function escapeHtml(s) {
             if(!s) return '';
             return s.replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m]; });
         }
 
-        // keyboard support for download links (Enter key)
         document.addEventListener('keydown', function(e){
             if(e.key === 'Enter' && document.activeElement.classList.contains('download-btn')){
                 document.activeElement.click();
