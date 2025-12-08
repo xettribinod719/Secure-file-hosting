@@ -1,66 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Login</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="login-container">
+    <main>
         <h1>Login</h1>
-        <form id="loginForm" class="card">
-            <input type="email" name="email" placeholder="Email" required><br>
-            <input type="password" name="password" placeholder="Password" required><br>
-            <button type="submit">Login</button>
+
+        <form id="loginForm" class="form-container">
+            <input class="input-field" type="email" name="email" placeholder="Email" required><br>
+            <input class="input-field" type="password" name="password" placeholder="Password" required><br>
+            <button class="primary-btn" type="submit">Login</button>
         </form>
- <p id="message" style="font-weight:bold;"></p>
 
+        <p id="message" class="msg"></p>
         <a href="/">Back to Home</a>
-    </div>
-   
-<script>
-    const form = document.getElementById("loginForm");
-    const msg = document.getElementById("message");
+    </main>
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
+    <script>
+        const form = document.getElementById("loginForm");
+        const msg = document.getElementById("message");
         const btn = form.querySelector("button");
-        btn.disabled = true;
-        btn.innerText = "Loading...";
 
-        const data = {
-            email: form.email.value,
-            password: form.password.value
-        };
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-        try {
-            const res = await fetch(`${API_URL}/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
-            });
+            msg.innerText = "";
+            btn.disabled = true;
+            btn.innerText = "Loading...";
 
-            const result = await res.json();
+            const data = {
+                email: form.email.value,
+                password: form.password.value
+            };
 
-            if (res.ok) {
-                msg.innerText = "Login successful!";
-                saveToken(result.token);
-                setTimeout(()=>{ window.location.href="/upload"; }, 1000);
-            } else {
-                msg.innerText = result.error;
+            try {
+                const res = await fetch(`${API_URL}/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+
+                if (res.ok) {
+                    msg.innerText = "Login successful!";
+                    saveToken(result.token);
+                    setTimeout(() => { window.location.href = "/upload"; }, 800);
+                } else {
+                    msg.innerText = result.error;
+                }
+            } catch (err) {
+                msg.innerText = "Network error. Try again.";
             }
-        } catch (error) {
-            msg.innerText = "Network error. Try again.";
-        }
 
-        btn.disabled = false;
-        btn.innerText = "Login";
-    });
-</script>
-
+            btn.disabled = false;
+            btn.innerText = "Login";
+        });
+    </script>
 </body>
 </html>
-
-
-
-
