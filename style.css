@@ -1,4 +1,4 @@
-{ margin: 0; padding: 0; box-sizing: border-box; }
+ { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     background: #eef1f5;
@@ -17,6 +17,25 @@ body {
 
 h1 { text-align: center; margin-bottom: 25px; }
 
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="file"],
+select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+input:focus, select:focus {
+    border-color: #2d89ef;
+    outline: none;
+    box-shadow: 0 0 4px rgba(45,137,239,0.4);
+}
+
 button, input[type="submit"] {
     background: #2d89ef;
     color: white;
@@ -28,11 +47,5 @@ button, input[type="submit"] {
     transition: 0.25s ease;
 }
 
-button:hover, input[type="submit"]:hover {
-    background: #1e5fad;
-    transform: translateY(-1px);
-}
-
-button:active {
-    transform: scale(0.97);
-}
+button:hover { background: #1e5fad; transform: translateY(-1px); }
+button:active { transform: scale(0.97); }
