@@ -1,9 +1,10 @@
- { margin: 0; padding: 0; box-sizing: border-box; }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     background: #eef1f5;
     font-family: "Segoe UI", Arial;
-    padding: 40px;
+    padding: 20px;
 }
 
 .container {
@@ -15,37 +16,31 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-h1 { text-align: center; margin-bottom: 25px; }
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+}
 
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="file"],
-select {
+h1 { margin-bottom: 25px; text-align: center; }
+
+input, select {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
-    border: 1px solid #ccc;
     border-radius: 6px;
-    font-size: 15px;
+    border: 1px solid #ccc;
 }
 
-input:focus, select:focus {
-    border-color: #2d89ef;
-    outline: none;
-    box-shadow: 0 0 4px rgba(45,137,239,0.4);
-}
+input:focus { border-color: #2d89ef; box-shadow: 0 0 4px rgba(0,0,255,0.3); }
 
-button, input[type="submit"] {
+button {
     background: #2d89ef;
-    color: white;
     padding: 12px 18px;
-    border: none;
     border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
-    transition: 0.25s ease;
+    border: none;
+    color: white;
+    transition: 0.25s;
 }
-
-button:hover { background: #1e5fad; transform: translateY(-1px); }
-button:active { transform: scale(0.97); }
+button:hover { background: #1e5fad; }
