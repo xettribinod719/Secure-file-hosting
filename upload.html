@@ -3,6 +3,10 @@
 <head>
     <title>Upload File</title>
     <link rel="stylesheet" href="/static/style.css">
+    <style>
+        #message.success { color: green; }
+        #message.error { color: red; }
+    </style>
 </head>
 <body>
     <h1>Upload File</h1>
@@ -38,24 +42,23 @@
         const MAX_SIZE = 20 * 1024 * 1024;
         const ALLOWED = ["image/", "application/pdf", "application/zip"];
 
+        function setMessage(text, success = false) {
+            msg.innerText = text;
+            msg.className = success ? "success" : "error";
+
+            setTimeout(() => { msg.innerText = ""; msg.className = ""; }, 4000);
+        }
+
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
 
             const file = fileInput.files[0];
-            if (!file) {
-                msg.innerText = "Please select a file.";
-                return;
-            }
+            if (!file) return setMessage("Please select a file.");
 
-            if (file.size > MAX_SIZE) {
-                msg.innerText = "File too large! Max 20MB allowed.";
-                return;
-            }
+            if (file.size > MAX_SIZE) return setMessage("File too large! Max 20MB allowed.");
 
-            if (!ALLOWED.some(type => file.type.startsWith(type))) {
-                msg.innerText = "File type not allowed.";
-                return;
-            }
+            if (!ALLOWED.some(type => file.type.startsWith(type)))
+                return setMessage("File type not allowed.");
 
             const token = getToken();
             if (!token) {
@@ -65,7 +68,7 @@
             }
 
             uploadBtn.disabled = true;
-            msg.innerText = "Uploading...";
+            setMessage("Uploading...", true);
 
             const data = new FormData(form);
 
@@ -78,7 +81,7 @@
             uploadBtn.disabled = false;
 
             const result = await res.json();
-            msg.innerText = res.ok ? result.message : result.error;
+            setMessage(res.ok ? result.message : result.error, res.ok);
         });
     </script>
 </body>
