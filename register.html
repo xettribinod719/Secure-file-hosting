@@ -11,7 +11,8 @@
         <input type="text" name="username" placeholder="Username" required minlength="3"><br>
         <input type="email" name="email" placeholder="Email" required autocomplete="email"><br>
         <input type="password" name="password" placeholder="Password" required minlength="6" autocomplete="new-password"><br>
-        <button type="submit">Register</button>
+        <button type="submit" id="submitBtn">Register</button>
+        <div id="loader" style="display:none;">Processing...</div>
     </form>
 
     <p id="message" style="font-weight:bold;"></p>
@@ -20,9 +21,14 @@
     <script>
         const form = document.getElementById("registerForm");
         const msg = document.getElementById("message");
+        const loader = document.getElementById("loader");
+        const btn = document.getElementById("submitBtn");
 
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
+
+            btn.disabled = true;
+            loader.style.display = "block";
 
             const data = {
                 username: form.username.value,
@@ -37,6 +43,9 @@
             });
 
             const result = await res.json();
+
+            loader.style.display = "none";
+            btn.disabled = false;
 
             if (res.ok) {
                 msg.style.color = "green";
