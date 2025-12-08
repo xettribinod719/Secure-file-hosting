@@ -23,7 +23,7 @@
         </label>
         <br>
 
-        <button type="submit">Upload</button>
+        <button type="submit" id="uploadBtn">Upload</button>
     </form>
 
     <p id="message"></p>
@@ -33,6 +33,7 @@
         const form = document.getElementById("uploadForm");
         const msg = document.getElementById("message");
         const fileInput = document.getElementById("fileInput");
+        const uploadBtn = document.getElementById("uploadBtn");
 
         const MAX_SIZE = 20 * 1024 * 1024;
         const ALLOWED = ["image/", "application/pdf", "application/zip"];
@@ -63,6 +64,9 @@
                 return;
             }
 
+            uploadBtn.disabled = true;
+            msg.innerText = "Uploading...";
+
             const data = new FormData(form);
 
             const res = await fetch(`${API_URL}/upload`, {
@@ -70,6 +74,8 @@
                 headers: { "Authorization": token },
                 body: data
             });
+
+            uploadBtn.disabled = false;
 
             const result = await res.json();
             msg.innerText = res.ok ? result.message : result.error;
