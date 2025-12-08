@@ -37,16 +37,16 @@ function uploadFile() {
         headers: { "Authorization": getToken() },
         body: formData
     })
-        .then(res => res.json())
-        .then(data => {
-            showMessage(data.message || "Upload completed");
-            loadFiles();
-        })
-        .catch(() => showMessage("Upload failed", "error"))
-        .finally(() => {
-            uploadBtn.disabled = false;
-            loader.style.display = "none";
-        });
+    .then(res => res.json())
+    .then(data => {
+        showMessage(data.message || "Upload successful");
+        loadFiles();
+    })
+    .catch(() => showMessage("Upload failed", "error"))
+    .finally(() => {
+        uploadBtn.disabled = false;
+        loader.style.display = "none";
+    });
 }
 
 function loadFiles() {
@@ -56,13 +56,19 @@ function loadFiles() {
     .then(res => res.json())
     .then(data => {
         const table = document.getElementById("filesTable");
+        const count = document.getElementById("fileCount");
+
         table.innerHTML = `
             <tr>
                 <th>Filename</th>
                 <th>Action</th>
             </tr>
         `;
-        (data.files || []).forEach(filename => {
+
+        const files = data.files || [];
+        count.innerText = `Total Files: ${files.length}`;
+
+        files.forEach(filename => {
             table.innerHTML += `
                 <tr>
                     <td>${filename}</td>
@@ -88,3 +94,4 @@ function deleteFile(filename) {
 }
 
 loadFiles();
+setInterval(loadFiles, 5000);
