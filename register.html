@@ -33,7 +33,7 @@
 
             if (!isValidPassword(form.password.value)) {
                 msg.style.color = "red";
-                msg.innerText = "Password must have at least 6 characters & 1 number.";
+                msg.innerText = "Password must contain at least 6 characters and 1 number.";
                 return;
             }
 
@@ -59,8 +59,13 @@
 
             if (res.ok) {
                 msg.style.color = "green";
-                msg.innerText = result.message;
+                msg.innerText = result.message + " Redirecting...";
                 form.reset();
+
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 1500);
+
             } else {
                 msg.style.color = "red";
                 msg.innerText = result.error;
@@ -69,3 +74,4 @@
     </script>
 </body>
 </html>
+
