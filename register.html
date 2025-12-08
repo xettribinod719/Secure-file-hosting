@@ -6,12 +6,14 @@
 </head>
 <body>
     <h1>Register</h1>
+
     <form id="registerForm">
-        <input type="text" name="username" placeholder="Username" required><br>
-        <input type="email" name="email" placeholder="Email" required><br>
-        <input type="password" name="password" placeholder="Password" required><br>
+        <input type="text" name="username" placeholder="Username" required minlength="3"><br>
+        <input type="email" name="email" placeholder="Email" required autocomplete="email"><br>
+        <input type="password" name="password" placeholder="Password" required minlength="6" autocomplete="new-password"><br>
         <button type="submit">Register</button>
     </form>
+
     <p id="message"></p>
     <a href="/">Back to Home</a>
 
@@ -21,23 +23,22 @@
 
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
+
             const data = {
                 username: form.username.value,
                 email: form.email.value,
                 password: form.password.value
             };
+
             const res = await fetch(`${API_URL}/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data)
             });
+
             const result = await res.json();
-            if(res.ok) {
-                msg.innerText = result.message;
-                form.reset();
-            } else {
-                msg.innerText = result.error;
-            }
+            msg.innerText = res.ok ? result.message : result.error;
+            if (res.ok) form.reset();
         });
     </script>
 </body>
