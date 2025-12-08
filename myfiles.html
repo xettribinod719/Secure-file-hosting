@@ -1,26 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>My Files</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>My Files</h1>
-    <table id="filesTable">
-        <thead>
-            <tr>
-                <th>Filename</th>
-                <th>Privacy</th>
-                <th>Size (Bytes)</th>
-                <th>Uploaded At</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-    <a href="/upload">Upload</a> | <a href="/">Home</a>
+    <div class="container">
+        <h1>My Files</h1>
+        <table id="filesTable">
+            <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Privacy</th>
+                    <th>Size (Bytes)</th>
+                    <th>Uploaded At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <p>
+            <a href="/upload">Upload</a> | <a href="/">Home</a>
+        </p>
+    </div>
 
     <script>
+        const API_URL = window.API_URL || '';
+
+        function getToken(){
+            return localStorage.getItem('token') || '';
+        }
+
         async function loadFiles() {
             const token = getToken();
             if(!token) { alert("Login required"); window.location.href="/login"; return; }
