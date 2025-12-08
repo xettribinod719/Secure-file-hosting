@@ -1,5 +1,4 @@
 
-
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -8,31 +7,33 @@
 body {
     background: #eef1f5;
     font-family: "Segoe UI", Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    padding: 20px;
+    padding: 40px;
 }
 
 .container {
-    width: 70%;
+    width: 60%;
     margin: auto;
-    padding: 25px;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 h1 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     color: #222;
 }
+
 button, input[type="submit"] {
     background: #2d89ef;
     color: white;
-    padding: 10px 15px;
+    padding: 12px 18px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
+    font-size: 15px;
 }
-
 button:hover, input[type="submit"]:hover {
     background: #1e5fad;
 }
