@@ -15,45 +15,50 @@
         <p id="message"></p>
         <a href="/">Back to Home</a>
     </div>
-   <script>
+   
+<script>
     const form = document.getElementById("loginForm");
     const msg = document.getElementById("message");
 
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        if (!form.email.value.includes("@")) {
-            msg.innerText = "Enter a valid email.";
-            return;
-        }
-        if (form.password.value.length < 4) {
-            msg.innerText = "Password must be at least 4 characters.";
-            return;
-        }
+        const btn = form.querySelector("button");
+        btn.disabled = true;
+        btn.innerText = "Loading...";
 
         const data = {
             email: form.email.value,
             password: form.password.value
         };
 
-        const res = await fetch(`${API_URL}/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        });
+        try {
+            const res = await fetch(`${API_URL}/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
 
-        const result = await res.json();
-        if(res.ok) {
-            msg.innerText = "Login successful!";
-            saveToken(result.token);
-            setTimeout(()=>{ window.location.href="/upload"; }, 1000);
-        } else {
-            msg.innerText = result.error;
+            const result = await res.json();
+
+            if (res.ok) {
+                msg.innerText = "Login successful!";
+                saveToken(result.token);
+                setTimeout(()=>{ window.location.href="/upload"; }, 1000);
+            } else {
+                msg.innerText = result.error;
+            }
+        } catch (error) {
+            msg.innerText = "Network error. Try again.";
         }
+
+        btn.disabled = false;
+        btn.innerText = "Login";
     });
 </script>
 
 </body>
 </html>
+
 
 
