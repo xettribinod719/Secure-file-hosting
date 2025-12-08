@@ -82,6 +82,12 @@
 
             const result = await res.json();
             setMessage(res.ok ? result.message : result.error, res.ok);
+
+            if (res.ok) {
+                setTimeout(() => {
+                    window.location.href = "/myfiles";
+                }, 2000);
+            }
         });
     </script>
 </body>
