@@ -6,14 +6,26 @@
 </head>
 <body>
     <h1>Upload File</h1>
+
     <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" name="file" required><br>
-        <select name="privacy">
-            <option value="private">Private</option>
-            <option value="public">Public</option>
-        </select><br>
+        <label>
+            Select File:
+            <input type="file" name="file" required>
+        </label>
+        <br>
+
+        <label>
+            Privacy:
+            <select name="privacy">
+                <option value="private">Private</option>
+                <option value="public">Public</option>
+            </select>
+        </label>
+        <br>
+
         <button type="submit">Upload</button>
     </form>
+
     <p id="message"></p>
     <a href="/myfiles">My Files</a> | <a href="/">Home</a>
 
@@ -23,8 +35,13 @@
 
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
+
             const token = getToken();
-            if(!token) { alert("Login required"); window.location.href="/login"; return; }
+            if (!token) {
+                alert("Login required");
+                window.location.href = "/login";
+                return;
+            }
 
             const data = new FormData(form);
 
@@ -33,9 +50,9 @@
                 headers: { "Authorization": token },
                 body: data
             });
+
             const result = await res.json();
-            if(res.ok) msg.innerText = result.message;
-            else msg.innerText = result.error;
+            msg.innerText = res.ok ? result.message : result.error;
         });
     </script>
 </body>
