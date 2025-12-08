@@ -14,7 +14,7 @@
         <button type="submit">Register</button>
     </form>
 
-    <p id="message"></p>
+    <p id="message" style="font-weight:bold;"></p>
     <a href="/">Back to Home</a>
 
     <script>
@@ -37,8 +37,15 @@
             });
 
             const result = await res.json();
-            msg.innerText = res.ok ? result.message : result.error;
-            if (res.ok) form.reset();
+
+            if (res.ok) {
+                msg.style.color = "green";
+                msg.innerText = result.message;
+                form.reset();
+            } else {
+                msg.style.color = "red";
+                msg.innerText = result.error;
+            }
         });
     </script>
 </body>
