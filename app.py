@@ -1,46 +1,31 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask import Flask, render_template
 import os
+from file_routes import file_bp
+from auth import auth_bp
 
-app = Flask(__name__)
-CORS(app)
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
 
-UPLOAD_FOLDER = "uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# Frontend template and static locations (relative to project root)
+TEMPLATE_DIR = os.path.join(PROJECT_ROOT, "frontend", "templates")
+STATIC_DIR = os.path.join(PROJECT_ROOT, "frontend", "static")
 
+app = Flask(
+    __name__,
+    template_folder=TEMPLATE_DIR,
+    static_folder=STATIC_DIR,
+    static_url_path="/static"
+)
 
-@app.route("/upload", methods=["POST"])
-def upload_file():
-    if "file" not in request.files:
-        return jsonify({"error": "No file part"}), 400
+# Register blueprints (file routes & auth)
+app.register_blueprint(file_bp)
+app.register_blueprint(auth_bp)
 
-    file = request.files["file"]
-
-    if file.filename == "":
-        return jsonify({"error": "No selected file"}), 400
-
-    filepath = os.path.join(UPLOAD_FOLDER, file.filename)
-    file.save(filepath)
-
-    return jsonify({"message": "File uploaded successfully", "filename": file.filename})
-
-
-@app.route("/files", methods=["GET"])
-def list_files():
-    files = os.listdir(UPLOAD_FOLDER)
-    return jsonify({"files": files})
-
-
-@app.route("/delete/<filename>", methods=["DELETE"])
-def delete_file(filename):
-    filepath = os.path.join(UPLOAD_FOLDER, filename)
-
-    if not os.path.exists(filepath):
-        return jsonify({"error": "File not found"}), 404
-
-    os.remove(filepath)
-    return jsonify({"message": "File deleted"})
-
+@app.route("/")
+def home():
+    # Render the frontend index.html from templates folder
+    return render_template("index.html")
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    # Run in debug for development; when running in PyCharm, this runs the dev server
+    app.run(debug=True, host="127.0.0.1", port=5000)
