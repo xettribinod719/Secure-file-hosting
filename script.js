@@ -1,9 +1,19 @@
 const API_URL = "http://127.0.0.1:5000";
 
+function getToken() {
+    return localStorage.getItem("token");
+}
+
 function uploadFile() {
     const fileInput = document.getElementById("fileInput");
     const uploadBtn = document.getElementById("uploadBtn");
     const loader = document.getElementById("loader");
+
+    if (!getToken()) {
+        alert("Login required");
+        window.location.href = "/login";
+        return;
+    }
 
     if (fileInput.files.length === 0) {
         alert("No file selected");
@@ -18,6 +28,7 @@ function uploadFile() {
 
     fetch(`${API_URL}/upload`, {
         method: "POST",
+        headers: { "Authorization": getToken() },
         body: formData
     })
         .then(res => res.json())
@@ -33,7 +44,9 @@ function uploadFile() {
 }
 
 function loadFiles() {
-    fetch(`${API_URL}/files`)
+    fetch(`${API_URL}/files`, {
+        headers: { "Authorization": getToken() }
+    })
         .then(res => res.json())
         .then(data => {
             const table = document.getElementById("filesTable");
@@ -43,7 +56,6 @@ function loadFiles() {
                     <th>Action</th>
                 </tr>
             `;
-
             (data.files || []).forEach(filename => {
                 table.innerHTML += `
                     <tr>
@@ -58,7 +70,8 @@ function loadFiles() {
 
 function deleteFile(filename) {
     fetch(`${API_URL}/delete/${filename}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: { "Authorization": getToken() }
     })
         .then(res => res.json())
         .then(data => {
