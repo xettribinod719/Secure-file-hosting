@@ -5,6 +5,12 @@ body {
     background: #eef1f5;
     font-family: "Segoe UI", Arial;
     padding: 20px;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .container {
@@ -12,10 +18,59 @@ body {
     margin: auto;
     padding: 30px;
     background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+    animation: fadeIn 0.6s ease;
 }
 
+@media (max-width: 768px) {
+    .container { width: 95%; padding: 20px; }
+}
+
+h1 {
+    margin-bottom: 25px;
+    text-align: center;
+    color: #222;
+}
+
+/* Inputs */
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    transition: 0.2s ease;
+}
+
+input:focus, select:focus {
+    border-color: #2d89ef;
+    box-shadow: 0 0 6px rgba(45,137,239,0.4);
+}
+
+/* Buttons */
+button, input[type="submit"] {
+    background: #2d89ef;
+    color: white;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.25s ease;
+}
+
+button:hover {
+    background: #1e5fad;
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+/* Tables */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -28,19 +83,8 @@ th, td {
 }
 
 th {
-    text-align: left;
     background: #f3f5f7;
     font-weight: 600;
 }
 
-tr:hover {
-    background: #f7f9fb;
-}
-
-button {
-    background: #2d89ef;
-    padding: 10px 14px;
-    color: white;
-    border: none;
-    border-radius: 6px;
-}
+tr:hover { background: #f8fafc; }
