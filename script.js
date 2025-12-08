@@ -2,10 +2,16 @@ const API_URL = "http://127.0.0.1:5000";
 
 function uploadFile() {
     const fileInput = document.getElementById("fileInput");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const loader = document.getElementById("loader");
+
     if (fileInput.files.length === 0) {
         alert("No file selected");
         return;
     }
+
+    uploadBtn.disabled = true;
+    loader.style.display = "inline-block";
 
     const formData = new FormData();
     formData.append("file", fileInput.files[0]);
@@ -14,12 +20,16 @@ function uploadFile() {
         method: "POST",
         body: formData
     })
-    .then(res => res.json())
-    .then(data => {
-        alert(data.message || "Upload completed");
-        loadFiles();
-    })
-    .catch(() => alert("Upload failed. Server error."));
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message || "Upload completed");
+            loadFiles();
+        })
+        .catch(() => alert("Upload failed. Server error."))
+        .finally(() => {
+            uploadBtn.disabled = false;
+            loader.style.display = "none";
+        });
 }
 
 function loadFiles() {
@@ -50,12 +60,12 @@ function deleteFile(filename) {
     fetch(`${API_URL}/delete/${filename}`, {
         method: "DELETE"
     })
-    .then(res => res.json())
-    .then(data => {
-        alert(data.message);
-        loadFiles();
-    })
-    .catch(() => alert("Delete failed. Server error."));
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+            loadFiles();
+        })
+        .catch(() => alert("Delete failed. Server error."));
 }
 
 loadFiles();
