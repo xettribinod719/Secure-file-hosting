@@ -1,4 +1,4 @@
-const API = "http://127.0.0.1:5000";
+const API_URL = "http://127.0.0.1:5000";
 
 function uploadFile() {
     const fileInput = document.getElementById("fileInput");
@@ -10,19 +10,20 @@ function uploadFile() {
     const formData = new FormData();
     formData.append("file", fileInput.files[0]);
 
-    fetch(`${API}/upload`, {
+    fetch(`${API_URL}/upload`, {
         method: "POST",
         body: formData
     })
-        .then(res => res.json())
-        .then(data => {
-            alert(data.message);
-            loadFiles();
-        });
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message || "Upload completed");
+        loadFiles();
+    })
+    .catch(() => alert("Upload failed. Server error."));
 }
 
 function loadFiles() {
-    fetch(`${API}/files`)
+    fetch(`${API_URL}/files`)
         .then(res => res.json())
         .then(data => {
             const table = document.getElementById("filesTable");
@@ -33,7 +34,7 @@ function loadFiles() {
                 </tr>
             `;
 
-            data.files.forEach(filename => {
+            (data.files || []).forEach(filename => {
                 table.innerHTML += `
                     <tr>
                         <td>${filename}</td>
@@ -41,18 +42,20 @@ function loadFiles() {
                     </tr>
                 `;
             });
-        });
+        })
+        .catch(() => alert("Failed to load files."));
 }
 
 function deleteFile(filename) {
-    fetch(`${API}/delete/${filename}`, {
+    fetch(`${API_URL}/delete/${filename}`, {
         method: "DELETE"
     })
-        .then(res => res.json())
-        .then(data => {
-            alert(data.message);
-            loadFiles();
-        });
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        loadFiles();
+    })
+    .catch(() => alert("Delete failed. Server error."));
 }
 
 loadFiles();
