@@ -1,12 +1,8 @@
-
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+{ margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     background: #eef1f5;
-    font-family: "Segoe UI", Arial, sans-serif;
+    font-family: "Segoe UI", Arial;
     padding: 40px;
 }
 
@@ -19,11 +15,7 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-h1 {
-    text-align: center;
-    margin-bottom: 25px;
-    color: #222;
-}
+h1 { text-align: center; margin-bottom: 25px; }
 
 button, input[type="submit"] {
     background: #2d89ef;
@@ -33,7 +25,14 @@ button, input[type="submit"] {
     border-radius: 8px;
     cursor: pointer;
     font-size: 15px;
+    transition: 0.25s ease;
 }
+
 button:hover, input[type="submit"]:hover {
     background: #1e5fad;
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: scale(0.97);
 }
