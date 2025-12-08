@@ -10,7 +10,7 @@
     <form id="uploadForm" enctype="multipart/form-data">
         <label>
             Select File:
-            <input type="file" name="file" required>
+            <input type="file" name="file" id="fileInput" required>
         </label>
         <br>
 
@@ -32,9 +32,29 @@
     <script>
         const form = document.getElementById("uploadForm");
         const msg = document.getElementById("message");
+        const fileInput = document.getElementById("fileInput");
+
+        const MAX_SIZE = 20 * 1024 * 1024;
+        const ALLOWED = ["image/", "application/pdf", "application/zip"];
 
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
+
+            const file = fileInput.files[0];
+            if (!file) {
+                msg.innerText = "Please select a file.";
+                return;
+            }
+
+            if (file.size > MAX_SIZE) {
+                msg.innerText = "File too large! Max 20MB allowed.";
+                return;
+            }
+
+            if (!ALLOWED.some(type => file.type.startsWith(type))) {
+                msg.innerText = "File type not allowed.";
+                return;
+            }
 
             const token = getToken();
             if (!token) {
