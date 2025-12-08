@@ -16,31 +16,31 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-        padding: 20px;
-    }
-}
-
-h1 { margin-bottom: 25px; text-align: center; }
-
-input, select {
+table {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+    border-collapse: collapse;
+    margin-top: 20px;
 }
 
-input:focus { border-color: #2d89ef; box-shadow: 0 0 4px rgba(0,0,255,0.3); }
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    text-align: left;
+    background: #f3f5f7;
+    font-weight: 600;
+}
+
+tr:hover {
+    background: #f7f9fb;
+}
 
 button {
     background: #2d89ef;
-    padding: 12px 18px;
-    border-radius: 8px;
-    border: none;
+    padding: 10px 14px;
     color: white;
-    transition: 0.25s;
+    border: none;
+    border-radius: 6px;
 }
-button:hover { background: #1e5fad; }
