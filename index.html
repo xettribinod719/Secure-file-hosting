@@ -3,222 +3,338 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Manager</title>
+    <title>SecureFile Hub - Secure File Hosting</title>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+        /* ===== MODERN DESIGN SYSTEM ===== */
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --light: #f8f9ff;
+            --dark: #1a1a2e;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --border: #e6e6f2;
+            
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            background: #f5f5f5;
-            color: #333;
+            font-family: 'Poppins', sans-serif;
+            background: var(--light);
+            color: var(--text-primary);
+            line-height: 1.6;
         }
 
-        h2 {
-            margin-top: 40px;
-            margin-bottom: 10px;
+        h1, h2, h3, h4 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
         }
 
-        .container {
-            max-width: 900px;
-            margin: auto;
+        /* ===== NAVIGATION ===== */
+        .navbar {
             background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            background: #fff;
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #eaeaea;
-        }
-
-        th {
-            background: #f0f0f0;
-        }
-
-        .btn {
-            padding: 7px 14px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
             text-decoration: none;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.25rem;
         }
 
-        .btn:hover {
-            opacity: 0.8;
-        }
-
-        .btn-delete {
-            background: #e74c3c;
-        }
-
-        .drop-zone {
-            margin-top: 10px;
-            padding: 30px;
-            border: 2px dashed #007bff;
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 10px;
-            text-align: center;
-            color: #555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            background: var(--light);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-primary);
             cursor: pointer;
         }
 
-        .drop-zone.dragover {
-            background: #e8f1ff;
+        /* ===== HERO SECTION ===== */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
-        #loading {
-            display: none;
-            color: #007bff;
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+        }
+
+        /* ===== BASIC CARDS ===== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .card h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* ===== BASIC BUTTONS ===== */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: var(--shadow-md);
+            }
+            
+            .nav-links.show {
+                display: flex;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
-
 <body>
-<div class="container">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                SecureFile Hub
+            </a>
 
-    <h2>Public Downloads</h2>
+            <div class="nav-links">
+                <a href="/" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
+                <a href="/upload" class="nav-link">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    Upload
+                </a>
+                <a href="/myfiles" class="nav-link">
+                    <i class="fas fa-folder"></i>
+                    My Files
+                </a>
+                <a href="/downloads" class="nav-link">
+                    <i class="fas fa-download"></i>
+                    Public Files
+                </a>
+            </div>
 
-    <!-- Upload Form -->
-    <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" id="fileInput" name="file">
-        <button type="submit" class="btn">Upload</button>
-        <span id="loading">Uploading...</span>
-    </form>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
 
-    <!-- Drag and Drop Area -->
-    <div id="dropZone" class="drop-zone">
-        Drag & Drop your file here or click to select
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Secure File Hosting Platform</h1>
+        <p>Upload, share, and manage your files securely with end-to-end encryption and privacy controls.</p>
+        
+        <div class="hero-actions" id="heroActions">
+            <!-- Will be populated later -->
+        </div>
+    </section>
+
+    <!-- Cards Grid -->
+    <div class="cards-grid">
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <h3>Upload Files</h3>
+            <p>Upload PDF and MP4 files up to 20MB with privacy controls.</p>
+            <a href="/upload" class="btn btn-primary">
+                <i class="fas fa-upload"></i>
+                Upload Now
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-folder-open"></i>
+            </div>
+            <h3>Manage Files</h3>
+            <p>View, organize, and manage all your uploaded files in one place.</p>
+            <a href="/myfiles" class="btn btn-primary">
+                <i class="fas fa-folder"></i>
+                View My Files
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">
+                <i class="fas fa-globe"></i>
+            </div>
+            <h3>Public Files</h3>
+            <p>Browse and download files shared publicly by other users.</p>
+            <a href="/downloads" class="btn btn-primary">
+                <i class="fas fa-download"></i>
+                Browse Files
+            </a>
+        </div>
     </div>
 
-    <h2>Files</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Filename</th>
-                <th style="width: 180px;">Action</th>
-            </tr>
-        </thead>
-        <tbody id="fileTableBody"></tbody>
-    </table>
-
-</div>
-
-<script>
-// ===== Simplified Fetch Wrapper =====
-async function api(url, method = "GET", body = null) {
-    const options = { method };
-    if (body) options.body = body;
-
-    try {
-        const res = await fetch(url, options);
-        if (!res.ok) throw new Error("Request failed");
-        return await res.json().catch(() => true);
-    } catch (err) {
-        console.error(err);
-        alert("An error occurred. Check server logs.");
-    }
-}
-
-// ===== Load Files =====
-async function loadFiles() {
-    const files = await api("/files/list");
-    const tbody = document.getElementById("fileTableBody");
-    tbody.innerHTML = "";
-
-    if (!files || !files.length) {
-        tbody.innerHTML = `<tr><td colspan="2">No files found.</td></tr>`;
-        return;
-    }
-
-    files.forEach(name => {
-        tbody.innerHTML += `
-            <tr>
-                <td>${name}</td>
-                <td>
-                    <a class="btn" href="/files/download/${name}">Download</a>
-                    <button class="btn btn-delete" onclick="deleteFile('${name}')">Delete</button>
-                </td>
-            </tr>
-        `;
-    });
-}
-
-// ===== Upload =====
-document.getElementById("uploadForm").addEventListener("submit", async e => {
-    e.preventDefault();
-
-    const input = document.getElementById("fileInput");
-    if (!input.files.length) return alert("Please select a file.");
-
-    const loading = document.getElementById("loading");
-    loading.style.display = "inline";
-
-    const form = new FormData();
-    form.append("file", input.files[0]);
-
-    const res = await api("/files/upload", "POST", form);
-
-    loading.style.display = "none";
-
-    if (res) {
-        alert("Upload successful!");
-        loadFiles();
-    }
-});
-
-// ===== Delete =====
-async function deleteFile(filename) {
-    if (!confirm(`Delete "${filename}" ?`)) return;
-
-    const res = await api(`/files/delete/${filename}`, "DELETE");
-
-    if (res) {
-        alert("File deleted.");
-        loadFiles();
-    }
-}
-
-// ===== Drag & Drop Upload =====
-const drop = document.getElementById("dropZone");
-
-drop.addEventListener("click", () => document.getElementById("fileInput").click());
-
-drop.addEventListener("dragover", e => {
-    e.preventDefault();
-    drop.classList.add("dragover");
-});
-
-drop.addEventListener("dragleave", () => drop.classList.remove("dragover"));
-
-drop.addEventListener("drop", async e => {
-    e.preventDefault();
-    drop.classList.remove("dragover");
-
-    if (!e.dataTransfer.files.length) return;
-
-    const form = new FormData();
-    form.append("file", e.dataTransfer.files[0]);
-
-    const res = await api("/files/upload", "POST", form);
-
-    if (res) {
-        alert("Upload successful!");
-        loadFiles();
-    }
-});
-
-// Init
-loadFiles();
-</script>
-
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('show');
+        });
+    </script>
 </body>
 </html>
