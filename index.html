@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Keep all head content from Phase 1 -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SecureFile Hub - Secure File Hosting</title>
@@ -12,151 +13,159 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* ===== MODERN DESIGN SYSTEM ===== */
-        :root {
-            --primary: #4361ee;
-            --primary-dark: #3a0ca3;
-            --secondary: #7209b7;
-            --accent: #f72585;
-            --light: #f8f9ff;
-            --dark: #1a1a2e;
-            --text-primary: #333;
-            --text-secondary: #666;
-            --border: #e6e6f2;
-            
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
-            
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            
-            --transition: all 0.3s ease;
-        }
+        /* Keep all CSS from Phase 1, then ADD these new styles: */
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--light);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        h1, h2, h3, h4 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-        }
-
-        /* ===== NAVIGATION ===== */
-        .navbar {
-            background: white;
-            padding: 1rem 2rem;
-            box-shadow: var(--shadow-sm);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
+        /* ===== USER AUTHENTICATION ===== */
+        .nav-actions {
             display: flex;
-            justify-content: space-between;
+            gap: 1rem;
             align-items: center;
         }
 
-        .nav-brand {
+        .btn-auth {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .btn-login {
+            color: var(--primary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-login:hover {
+            border-color: var(--primary);
+            background: var(--light);
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+
+        .user-profile {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            text-decoration: none;
-            color: var(--primary);
-            font-weight: 700;
-            font-size: 1.25rem;
+            padding: 0.5rem;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
         }
 
-        .logo-icon {
+        .user-profile:hover {
+            background: var(--light);
+        }
+
+        .user-avatar {
             width: 36px;
             height: 36px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 10px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
+            font-weight: 600;
         }
 
-        .nav-links {
+        .user-info {
             display: flex;
-            gap: 1rem;
+            flex-direction: column;
         }
 
-        .nav-link {
-            padding: 0.5rem 1rem;
-            text-decoration: none;
+        .user-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .btn-logout {
+            background: none;
+            border: none;
             color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
             border-radius: var(--radius-sm);
             transition: var(--transition);
         }
 
-        .nav-link:hover {
-            background: var(--light);
+        .btn-logout:hover {
             color: var(--primary);
+            background: var(--light);
         }
 
-        .nav-link.active {
-            background: var(--primary);
-            color: white;
+        /* ===== STATISTICS SECTION ===== */
+        .stats-section {
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+            border-radius: var(--radius-lg);
+            margin: 2rem auto;
+            max-width: 1200px;
         }
 
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--text-primary);
-            cursor: pointer;
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
         }
 
-        /* ===== HERO SECTION ===== */
-        .hero {
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
             text-align: center;
-            padding: 4rem 2rem;
-            max-width: 800px;
-            margin: 0 auto;
+            transition: var(--transition);
         }
 
-        .hero h1 {
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .stat-number {
             font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
         }
 
-        .hero p {
+        .stat-label {
             color: var(--text-secondary);
-            font-size: 1.125rem;
-            margin-bottom: 2rem;
+            font-size: 0.95rem;
         }
 
-        /* ===== BASIC CARDS ===== */
-        .cards-grid {
+        /* ===== FEATURES GRID ===== */
+        .feature-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            padding: 2rem;
+            padding: 3rem 2rem;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .card {
+        .feature-card {
             background: white;
             padding: 2rem;
             border-radius: var(--radius-lg);
@@ -164,88 +173,187 @@
             transition: var(--transition);
         }
 
-        .card:hover {
+        .feature-card:hover {
             transform: translateY(-4px);
             box-shadow: var(--shadow-lg);
         }
 
-        .card-icon {
+        .feature-icon {
             width: 60px;
             height: 60px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             font-size: 1.5rem;
         }
 
-        .card h3 {
-            margin-bottom: 1rem;
-            color: var(--dark);
-        }
-
-        .card p {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
-
-        /* ===== BASIC BUTTONS ===== */
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--radius-md);
+        .feature-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 0.85rem;
             font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        /* ===== FILE UPLOAD ===== */
+        .upload-section {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .upload-container {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .drop-zone {
+            border: 3px dashed var(--border);
+            border-radius: var(--radius-md);
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin: 1.5rem 0;
+        }
+
+        .drop-zone:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.02);
+        }
+
+        .drop-zone.dragover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* ===== FILE TABLE ===== */
+        .table-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            margin: 2rem 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--light);
+        }
+
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
             text-decoration: none;
+            transition: var(--transition);
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            transition: var(--transition);
-            border: none;
-            cursor: pointer;
+            margin-right: 0.5rem;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        .btn-download {
+            background: var(--primary);
             color: white;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
         }
 
-        /* ===== RESPONSIVE ===== */
+        /* ===== MESSAGE BOX ===== */
+        #msgBox {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            z-index: 1000;
+            color: white;
+            font-weight: 600;
+            display: none;
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* ===== SECURITY BADGE ===== */
+        .security-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            z-index: 100;
+        }
+
+        .security-badge i {
+            color: var(--primary);
+        }
+
+        /* ===== RESPONSIVE UPDATES ===== */
         @media (max-width: 768px) {
-            .menu-toggle {
-                display: block;
-            }
-            
-            .nav-links {
+            .nav-actions {
                 display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: white;
-                flex-direction: column;
-                padding: 1rem;
-                box-shadow: var(--shadow-md);
             }
             
-            .nav-links.show {
-                display: flex;
+            .stats-container,
+            .feature-grid {
+                grid-template-columns: 1fr;
             }
             
-            .hero h1 {
-                font-size: 2rem;
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .security-badge {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
+    <!-- Navigation (UPDATED with user actions) -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="/" class="nav-brand">
@@ -274,6 +382,11 @@
                 </a>
             </div>
 
+            <!-- NEW: User Actions -->
+            <div class="nav-actions" id="navActions">
+                <!-- Will be populated by JavaScript -->
+            </div>
+
             <button class="menu-toggle" id="menuToggle">
                 <i class="fas fa-bars"></i>
             </button>
@@ -286,7 +399,36 @@
         <p>Upload, share, and manage your files securely with end-to-end encryption and privacy controls.</p>
         
         <div class="hero-actions" id="heroActions">
-            <!-- Will be populated later -->
+            <!-- Will be populated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- NEW: Statistics Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-shield-check"></i>
+                </div>
+                <div class="stat-number">256-bit</div>
+                <div class="stat-label">Military Grade Encryption</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div class="stat-number">99.9%</div>
+                <div class="stat-label">Uptime Guarantee</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div class="stat-number">∞</div>
+                <div class="stat-label">Unlimited Storage</div>
+            </div>
         </div>
     </section>
 
@@ -329,11 +471,130 @@
         </div>
     </div>
 
+    <!-- NEW: Features Grid -->
+    <div class="feature-grid">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h3>Military-Grade Security</h3>
+            <p>All files are encrypted using AES-256 encryption both at rest and in transit.</p>
+            <span class="feature-badge">AES-256 Encryption</span>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <h3>Privacy Controls</h3>
+            <p>Choose between public and private files. You control who can access your content.</p>
+            <span class="feature-badge">Granular Permissions</span>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <h3>Lightning Fast</h3>
+            <p>High-speed uploads and downloads with our globally distributed CDN.</p>
+            <span class="feature-badge">Global CDN</span>
+        </div>
+    </div>
+
+    <!-- NEW: Security Badge -->
+    <div class="security-badge">
+        <i class="fas fa-lock"></i>
+        <span>Secured Connection</span>
+    </div>
+
+    <!-- NEW: Message Box -->
+    <div id="msgBox"></div>
+
     <script>
+        // User authentication state management
+        function updateNavigation() {
+            const token = localStorage.getItem("token");
+            const navActions = document.getElementById('navActions');
+            const heroActions = document.getElementById('heroActions');
+
+            if (token) {
+                // User is logged in
+                navActions.innerHTML = `
+                    <div class="user-profile">
+                        <div class="user-avatar">U</div>
+                        <div class="user-info">
+                            <div class="user-name">User ${token.substring(0, 6)}</div>
+                        </div>
+                        <button class="btn-logout" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                `;
+
+                heroActions.innerHTML = `
+                    <a href="/upload" class="btn btn-primary">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        Upload File
+                    </a>
+                    <a href="/myfiles" class="btn" style="background: white; color: var(--primary); border: 2px solid var(--border);">
+                        <i class="fas fa-folder"></i>
+                        My Files
+                    </a>
+                `;
+            } else {
+                // User is not logged in
+                navActions.innerHTML = `
+                    <a href="/login" class="btn-auth btn-login">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </a>
+                    <a href="/register" class="btn-auth btn-register">
+                        <i class="fas fa-user-plus"></i>
+                        Register
+                    </a>
+                `;
+
+                heroActions.innerHTML = `
+                    <a href="/register" class="btn btn-primary">
+                        <i class="fas fa-rocket"></i>
+                        Get Started Free
+                    </a>
+                    <a href="/login" class="btn" style="background: rgba(255,255,255,0.2); color: var(--primary); border: 2px solid var(--primary);">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </a>
+                `;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("token");
+            showMessage("Logged out successfully", "success");
+            setTimeout(() => {
+                updateNavigation();
+            }, 1000);
+        }
+
+        function showMessage(text, type = "success") {
+            const msgBox = document.getElementById('msgBox');
+            msgBox.textContent = text;
+            msgBox.style.backgroundColor = type === "success" ? "#2ecc71" : "#e74c3c";
+            msgBox.style.display = "block";
+
+            setTimeout(() => {
+                msgBox.style.display = "none";
+            }, 3000);
+        }
+
         // Mobile menu toggle
         document.getElementById('menuToggle').addEventListener('click', function() {
             const navLinks = document.querySelector('.nav-links');
             navLinks.classList.toggle('show');
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavigation();
         });
     </script>
 </body>
