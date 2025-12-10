@@ -8,41 +8,33 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Better Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Animate.css -->
+    <!-- Animate.css for animations -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
     <style>
-        /* ===== ENHANCED DESIGN SYSTEM ===== */
+        /* ===== BASE STYLES WITH BETTER TYPOGRAPHY ===== */
         :root {
-            --primary: #4361ee;
-            --primary-light: #6c8eff;
-            --primary-dark: #3a0ca3;
-            --secondary: #7209b7;
-            --secondary-light: #9d4edd;
-            --success: #2ecc71;
-            --danger: #e74c3c;
-            --warning: #f39c12;
-            --light: #f8f9ff;
-            --dark: #1a1a2e;
-            --text-primary: #2c3e50;
-            --text-secondary: #7f8c8d;
-            --border: #e6e6f2;
-            
+            --primary-gradient: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            --secondary-gradient: linear-gradient(135deg, #7209b7 0%, #f72585 100%);
+            --accent-color: #4361ee;
+            --accent-dark: #3a0ca3;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a6a;
+            --text-light: #8b8ba8;
+            --bg-light: #f8f9ff;
+            --bg-white: #ffffff;
+            --border-light: #e6e6f2;
             --shadow-sm: 0 2px 12px rgba(67, 97, 238, 0.08);
             --shadow-md: 0 8px 32px rgba(67, 97, 238, 0.12);
             --shadow-lg: 0 16px 48px rgba(67, 97, 238, 0.16);
-            
             --radius-sm: 12px;
             --radius-md: 16px;
-            --radius-lg: 20px;
-            --radius-xl: 24px;
-            
-            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -51,15 +43,11 @@
             box-sizing: border-box;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
             color: var(--text-primary);
-            line-height: 1.7;
+            line-height: 1.6;
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -71,28 +59,27 @@
             line-height: 1.2;
         }
 
-        /* ===== POLISHED NAVIGATION ===== */
+        /* ===== NAVIGATION BAR ===== */
         .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: var(--bg-white);
             padding: 0 2rem;
             box-shadow: var(--shadow-sm);
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            height: 80px;
+            border-bottom: 1px solid var(--border-light);
         }
 
         .nav-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 100%;
             max-width: 1200px;
             margin: 0 auto;
+            height: 80px;
         }
 
+        /* Logo/Brand */
         .nav-brand {
             display: flex;
             align-items: center;
@@ -108,7 +95,7 @@
         .logo-icon {
             width: 44px;
             height: 44px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary-gradient);
             border-radius: 14px;
             display: flex;
             align-items: center;
@@ -127,7 +114,7 @@
             font-family: 'Montserrat', sans-serif;
             font-weight: 800;
             font-size: 1.5rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -136,19 +123,21 @@
 
         .brand-sub {
             font-size: 0.75rem;
-            color: var(--text-secondary);
+            color: var(--text-light);
             font-weight: 500;
             letter-spacing: 1.5px;
             text-transform: uppercase;
             margin-top: -2px;
         }
 
+        /* Navigation Links */
         .nav-links {
             display: flex;
             gap: 0.5rem;
-            background: var(--light);
-            border-radius: var(--radius-xl);
+            background: var(--bg-light);
+            border-radius: var(--radius-lg);
             padding: 0.5rem;
+            margin: 0 2rem;
         }
 
         .nav-link {
@@ -159,51 +148,90 @@
             text-decoration: none;
             color: var(--text-secondary);
             font-weight: 500;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-md);
             transition: var(--transition);
             position: relative;
+            font-size: 0.95rem;
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
         }
 
         .nav-link:hover {
-            color: var(--primary);
-            background: white;
+            color: var(--accent-color);
+            background: var(--bg-white);
             transform: translateY(-1px);
             box-shadow: var(--shadow-sm);
         }
 
         .nav-link.active {
             color: white;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary-gradient);
             font-weight: 600;
             box-shadow: 0 4px 16px rgba(67, 97, 238, 0.3);
         }
 
+        /* User Actions */
         .nav-actions {
             display: flex;
             gap: 1rem;
             align-items: center;
         }
 
+        .btn-auth {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .btn-login {
+            color: var(--accent-color);
+            border: 2px solid var(--border-light);
+        }
+
+        .btn-login:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-1px);
+        }
+
+        .btn-register {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 16px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(67, 97, 238, 0.4);
+        }
+
+        /* User Profile */
         .user-profile {
             display: flex;
             align-items: center;
             gap: 1rem;
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-xl);
+            padding: 0.5rem;
+            border-radius: var(--radius-lg);
             transition: var(--transition);
-            border: 1px solid transparent;
         }
 
         .user-profile:hover {
-            background: var(--light);
-            border-color: var(--border);
-            transform: translateY(-2px);
+            background: var(--bg-light);
         }
 
         .user-avatar {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary-gradient);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -214,10 +242,36 @@
             box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
         }
 
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .user-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            background: #2ecc71;
+            border-radius: 50%;
+        }
+
         .btn-logout {
             background: none;
             border: none;
-            color: var(--text-secondary);
+            color: var(--text-light);
             cursor: pointer;
             padding: 0.5rem;
             border-radius: var(--radius-sm);
@@ -225,10 +279,11 @@
         }
 
         .btn-logout:hover {
-            color: var(--primary);
-            background: var(--light);
+            color: var(--accent-color);
+            background: var(--bg-light);
         }
 
+        /* Menu Toggle */
         .menu-toggle {
             display: none;
             background: none;
@@ -239,10 +294,12 @@
             padding: 0.5rem;
         }
 
-        /* ===== ENHANCED HERO SECTION ===== */
+        /* ===== HERO SECTION ===== */
         .hero {
             text-align: center;
             padding: 6rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -250,10 +307,11 @@
         .hero h1 {
             font-size: 3.5rem;
             margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            line-height: 1.1;
         }
 
         .hero p {
@@ -261,9 +319,11 @@
             color: var(--text-secondary);
             max-width: 700px;
             margin: 0 auto 2.5rem;
-            line-height: 1.8;
+            line-height: 1.7;
+            font-weight: 400;
         }
 
+        /* Hero Actions */
         .hero-actions {
             display: flex;
             gap: 1rem;
@@ -282,31 +342,13 @@
             align-items: center;
             gap: 0.75rem;
             transition: var(--transition);
-            font-family: 'Montserrat', sans-serif;
             position: relative;
             overflow: hidden;
-        }
-
-        .btn-hero::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .btn-hero:hover::after {
-            width: 300px;
-            height: 300px;
+            font-family: 'Montserrat', sans-serif;
         }
 
         .btn-hero-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary-gradient);
             color: white;
             box-shadow: 0 8px 32px rgba(67, 97, 238, 0.3);
         }
@@ -318,105 +360,18 @@
 
         .btn-hero-secondary {
             background: white;
-            color: var(--primary);
-            border: 2px solid var(--border);
+            color: var(--accent-color);
+            border: 2px solid var(--border-light);
             box-shadow: var(--shadow-sm);
         }
 
         .btn-hero-secondary:hover {
-            border-color: var(--primary);
+            border-color: var(--accent-color);
             transform: translateY(-3px);
             box-shadow: var(--shadow-md);
         }
 
-        /* ===== ANIMATED CARDS ===== */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-            padding: 4rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            transition: var(--transition);
-            border: 1px solid var(--border);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-        }
-
-        .card-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            color: white;
-            font-size: 2rem;
-            box-shadow: 0 8px 24px rgba(67, 97, 238, 0.3);
-        }
-
-        /* ===== ENHANCED FEATURES ===== */
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-            padding: 4rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            transition: var(--transition);
-            border: 1px solid var(--border);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-        }
-
-        /* ===== ADVANCED STATS ===== */
+        /* ===== STATS SECTION ===== */
         .stats-section {
             padding: 4rem 2rem;
             background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
@@ -432,13 +387,13 @@
         }
 
         .stat-card {
-            background: white;
+            background: var(--bg-white);
             padding: 2.5rem 2rem;
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-md);
             text-align: center;
             transition: var(--transition);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-light);
             position: relative;
             overflow: hidden;
         }
@@ -455,10 +410,184 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
+            background: var(--primary-gradient);
         }
 
-        /* ===== POLISHED MESSAGE BOX ===== */
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--accent-color);
+            font-size: 1.8rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .stat-number span {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* ===== FEATURES SECTION ===== */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--bg-white);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            border: 1px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-gradient);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 2rem;
+            box-shadow: 0 8px 24px rgba(67, 97, 238, 0.3);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+        }
+
+        .feature-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--accent-color);
+            border-radius: var(--radius-lg);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* ===== CARDS GRID ===== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--bg-white);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            border: 1px solid var(--border-light);
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-gradient);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 2rem;
+            box-shadow: 0 8px 24px rgba(67, 97, 238, 0.3);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+        }
+
+        .btn-action {
+            padding: 0.875rem 1.75rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 16px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(67, 97, 238, 0.4);
+        }
+
+        /* ===== MESSAGE BOX ===== */
         #msgBox {
             position: fixed;
             top: 2rem;
@@ -474,6 +603,7 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             animation: slideInRight 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             max-width: 350px;
+            font-family: 'Poppins', sans-serif;
         }
 
         @keyframes slideInRight {
@@ -487,92 +617,115 @@
             }
         }
 
-        /* ===== LOADING STATES ===== */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid var(--light);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        /* ===== SECURITY BADGE ===== */
+        .security-badge {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-white);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            z-index: 1000;
+            animation: pulse 2s infinite;
+            font-family: 'Poppins', sans-serif;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .security-badge i {
+            color: var(--accent-color);
         }
 
-        /* ===== RESPONSIVE POLISH ===== */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
         @media (max-width: 1024px) {
-            .hero h1 {
-                font-size: 3rem;
-            }
-            
             .nav-links {
                 margin: 0 1rem;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
             }
         }
 
         @media (max-width: 768px) {
             .navbar {
                 padding: 0 1rem;
-                height: auto;
             }
-            
+
             .nav-container {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem 0;
+                height: 70px;
             }
-            
+
             .menu-toggle {
                 display: block;
             }
-            
+
             .nav-links {
                 display: none;
-                width: 100%;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--bg-white);
                 flex-direction: column;
-                margin: 0;
                 padding: 1rem;
+                margin: 0;
+                box-shadow: var(--shadow-lg);
+                border-radius: 0 0 var(--radius-lg) var(--radius-lg);
             }
-            
+
             .nav-links.show {
                 display: flex;
             }
-            
-            .nav-actions {
-                width: 100%;
+
+            .nav-link {
                 justify-content: center;
             }
-            
+
+            .nav-actions {
+                display: none;
+            }
+
             .hero {
                 padding: 4rem 1rem 3rem;
             }
-            
+
             .hero h1 {
                 font-size: 2.5rem;
             }
-            
+
             .hero p {
                 font-size: 1.1rem;
             }
-            
+
             .hero-actions {
                 flex-direction: column;
+                align-items: center;
             }
-            
+
             .btn-hero {
                 width: 100%;
                 max-width: 300px;
                 justify-content: center;
             }
-            
-            .cards-grid,
+
+            .stats-container,
             .feature-grid,
-            .stats-container {
+            .cards-grid {
                 grid-template-columns: 1fr;
-                padding: 2rem 1rem;
+            }
+
+            .security-badge {
+                display: none;
             }
         }
 
@@ -580,13 +733,13 @@
             .hero h1 {
                 font-size: 2rem;
             }
-            
-            .card,
+
+            .stat-card,
             .feature-card,
-            .stat-card {
+            .card {
                 padding: 2rem;
             }
-            
+
             .brand-name {
                 font-size: 1.25rem;
             }
@@ -594,9 +747,10 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
+    <!-- Professional Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
+            <!-- Logo/Brand -->
             <a href="/" class="nav-brand">
                 <div class="logo-icon">
                     <i class="fas fa-shield-alt"></i>
@@ -607,6 +761,7 @@
                 </div>
             </a>
 
+            <!-- Main Navigation Links -->
             <div class="nav-links">
                 <a href="/" class="nav-link active">
                     <i class="fas fa-home"></i>
@@ -626,169 +781,238 @@
                 </a>
             </div>
 
+            <!-- User Actions (Login/Register or Profile) -->
             <div class="nav-actions" id="navActions">
-                <!-- Populated by JavaScript -->
+                <!-- This will be populated by JavaScript -->
             </div>
 
+            <!-- Mobile Menu Toggle -->
             <button class="menu-toggle" id="menuToggle">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <h1 class="animate__animated animate__fadeInDown">Secure File Hosting<br>Made Simple</h1>
-        <p class="animate__animated animate__fadeInUp">Upload, share, and manage your files securely with military-grade encryption, lightning-fast transfers, and complete privacy control.</p>
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1 class="animate__animated animate__fadeInDown">Secure File Hosting<br>Made Simple</h1>
+            <p class="animate__animated animate__fadeInUp">Upload, share, and manage your files securely with military-grade encryption, lightning-fast transfers, and complete privacy control.</p>
 
-        <div class="hero-actions" id="heroActions">
-            <!-- Populated by JavaScript -->
-        </div>
-    </section>
+            <div class="hero-actions" id="heroActions">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </section>
 
-    <!-- Stats Section -->
-    <section class="stats-section">
-        <div class="stats-container">
-            <div class="stat-card animate__animated" data-animate="fadeInLeft">
-                <div class="stat-icon">
-                    <i class="fas fa-shield-check"></i>
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="stats-container">
+                <div class="stat-card animate__animated animate__fadeInLeft">
+                    <div class="stat-icon">
+                        <i class="fas fa-shield-check"></i>
+                    </div>
+                    <div class="stat-number">256<span>-bit</span></div>
+                    <div class="stat-label">Military Grade Encryption</div>
                 </div>
-                <div class="stat-number">256<span>-bit</span></div>
-                <div class="stat-label">Military Grade Encryption</div>
+
+                <div class="stat-card animate__animated animate__fadeInUp">
+                    <div class="stat-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="stat-number">99.9<span>%</span></div>
+                    <div class="stat-label">Uptime Guarantee</div>
+                </div>
+
+                <div class="stat-card animate__animated animate__fadeInRight">
+                    <div class="stat-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Unlimited Storage</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <div class="cards-grid">
+            <div class="card animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
+                <div class="card-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3>Upload Files</h3>
+                <p>Upload PDF and MP4 files up to 20MB with privacy controls.</p>
+                <a href="/upload" class="btn-action btn-primary">
+                    <i class="fas fa-upload"></i>
+                    Upload Now
+                </a>
             </div>
 
-            <div class="stat-card animate__animated" data-animate="fadeInUp">
-                <div class="stat-icon">
+            <div class="card animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+                <div class="card-icon">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <h3>Manage Files</h3>
+                <p>View, organize, and manage all your uploaded files in one place.</p>
+                <a href="/myfiles" class="btn-action btn-primary">
+                    <i class="fas fa-folder"></i>
+                    View My Files
+                </a>
+            </div>
+
+            <div class="card animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+                <div class="card-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h3>Public Files</h3>
+                <p>Browse and download files shared publicly by other users.</p>
+                <a href="/downloads" class="btn-action btn-primary">
+                    <i class="fas fa-download"></i>
+                    Browse Files
+                </a>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="feature-grid">
+            <div class="feature-card animate__animated animate__fadeInLeft">
+                <div class="feature-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3>Military-Grade Security</h3>
+                <p>All files are encrypted using AES-256 encryption both at rest and in transit. Your data is protected with bank-level security.</p>
+                <span class="feature-badge">AES-256 Encryption</span>
+            </div>
+
+            <div class="feature-card animate__animated animate__fadeInUp">
+                <div class="feature-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h3>Privacy Controls</h3>
+                <p>Choose between public and private files with granular permission settings. You control exactly who can access your content.</p>
+                <span class="feature-badge">Granular Permissions</span>
+            </div>
+
+            <div class="feature-card animate__animated animate__fadeInRight">
+                <div class="feature-icon">
                     <i class="fas fa-bolt"></i>
                 </div>
-                <div class="stat-number">99.9<span>%</span></div>
-                <div class="stat-label">Uptime Guarantee</div>
-            </div>
-
-            <div class="stat-card animate__animated" data-animate="fadeInRight">
-                <div class="stat-icon">
-                    <i class="fas fa-database"></i>
-                </div>
-                <div class="stat-number">∞</div>
-                <div class="stat-label">Unlimited Storage</div>
+                <h3>Lightning Fast</h3>
+                <p>High-speed uploads and downloads powered by our globally distributed CDN. Experience blazing fast file transfers.</p>
+                <span class="feature-badge">Global CDN</span>
             </div>
         </div>
-    </section>
+    </main>
 
-    <!-- Cards Grid -->
-    <div class="cards-grid">
-        <div class="card animate__animated" data-animate="fadeInUp" data-delay="0.1">
-            <div class="card-icon">
-                <i class="fas fa-cloud-upload-alt"></i>
-            </div>
-            <h3>Upload Files</h3>
-            <p>Upload PDF and MP4 files up to 20MB with privacy controls.</p>
-            <a href="/upload" class="btn-hero btn-hero-primary">
-                <i class="fas fa-upload"></i>
-                Upload Now
-            </a>
-        </div>
-
-        <div class="card animate__animated" data-animate="fadeInUp" data-delay="0.2">
-            <div class="card-icon">
-                <i class="fas fa-folder-open"></i>
-            </div>
-            <h3>Manage Files</h3>
-            <p>View, organize, and manage all your uploaded files in one place.</p>
-            <a href="/myfiles" class="btn-hero btn-hero-primary">
-                <i class="fas fa-folder"></i>
-                View My Files
-            </a>
-        </div>
-
-        <div class="card animate__animated" data-animate="fadeInUp" data-delay="0.3">
-            <div class="card-icon">
-                <i class="fas fa-globe"></i>
-            </div>
-            <h3>Public Files</h3>
-            <p>Browse and download files shared publicly by other users.</p>
-            <a href="/downloads" class="btn-hero btn-hero-primary">
-                <i class="fas fa-download"></i>
-                Browse Files
-            </a>
-        </div>
+    <!-- Security Badge -->
+    <div class="security-badge">
+        <i class="fas fa-lock"></i>
+        <span>Secured Connection</span>
     </div>
 
-    <!-- Features Section -->
-    <div class="feature-grid">
-        <div class="feature-card animate__animated" data-animate="fadeInLeft">
-            <div class="feature-icon">
-                <i class="fas fa-lock"></i>
-            </div>
-            <h3>Military-Grade Security</h3>
-            <p>All files are encrypted using AES-256 encryption both at rest and in transit. Your data is protected with bank-level security.</p>
-            <span class="feature-badge">AES-256 Encryption</span>
-        </div>
-
-        <div class="feature-card animate__animated" data-animate="fadeInUp">
-            <div class="feature-icon">
-                <i class="fas fa-user-shield"></i>
-            </div>
-            <h3>Privacy Controls</h3>
-            <p>Choose between public and private files with granular permission settings. You control exactly who can access your content.</p>
-            <span class="feature-badge">Granular Permissions</span>
-        </div>
-
-        <div class="feature-card animate__animated" data-animate="fadeInRight">
-            <div class="feature-icon">
-                <i class="fas fa-bolt"></i>
-            </div>
-            <h3>Lightning Fast</h3>
-            <p>High-speed uploads and downloads powered by our globally distributed CDN. Experience blazing fast file transfers.</p>
-            <span class="feature-badge">Global CDN</span>
-        </div>
-    </div>
-
+    <!-- Message Box -->
     <div id="msgBox"></div>
 
     <script>
-        // Enhanced navigation management
-        function updateNavigation() {
+        const API_URL = "http://127.0.0.1:5000";
+
+        function showMessage(text, type = "success") {
+            const msgBox = document.getElementById('msgBox');
+            msgBox.textContent = text;
+            msgBox.style.backgroundColor = type === "success"
+                ? "rgba(46, 204, 113, 0.95)"
+                : "rgba(231, 76, 60, 0.95)";
+            msgBox.style.display = "block";
+
+            setTimeout(() => {
+                msgBox.style.opacity = "0";
+                msgBox.style.transform = "translateX(100%)";
+                setTimeout(() => {
+                    msgBox.style.display = "none";
+                    msgBox.style.opacity = "1";
+                    msgBox.style.transform = "translateX(0)";
+                }, 500);
+            }, 3000);
+        }
+
+        // FIXED: Simple token check - NO AUTO DEMO TOKEN CREATION
+        function checkAuth() {
             const token = localStorage.getItem("token");
+
+            if (!token) {
+                return { isAuthenticated: false };
+            }
+
+            try {
+                // Try to decode the token
+                const parts = token.split('.');
+                if (parts.length === 3) {
+                    const payload = JSON.parse(atob(parts[1]));
+
+                    // Check if token is expired
+                    if (payload.exp && payload.exp * 1000 < Date.now()) {
+                        localStorage.removeItem("token");
+                        return { isAuthenticated: false };
+                    }
+
+                    return {
+                        isAuthenticated: true,
+                        username: payload.username || "User",
+                        userId: payload.user_id
+                    };
+                }
+            } catch (e) {
+                // Invalid token
+                localStorage.removeItem("token");
+            }
+
+            return { isAuthenticated: false };
+        }
+
+        // FIXED: Navigation Management - SIMPLIFIED
+        function updateNavigation() {
+            const auth = checkAuth();
             const navActions = document.getElementById('navActions');
             const heroActions = document.getElementById('heroActions');
 
-            if (token) {
-                try {
-                    const payload = JSON.parse(atob(token.split('.')[1]));
-                    const userId = payload.user_id;
-                    const userInitial = userId.charAt(0).toUpperCase();
+            if (auth.isAuthenticated) {
+                // User is logged in - show profile
+                const userInitial = auth.username.charAt(0).toUpperCase();
 
-                    navActions.innerHTML = `
-                        <div class="user-profile">
-                            <div class="user-avatar">${userInitial}</div>
-                            <button class="btn-logout" onclick="logout()" title="Logout">
-                                <i class="fas fa-sign-out-alt"></i>
-                            </button>
-                        </div>
-                    `;
-
-                    heroActions.innerHTML = `
-                        <a href="/upload" class="btn-hero btn-hero-primary animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            Upload File
-                        </a>
-                        <a href="/myfiles" class="btn-hero btn-hero-secondary animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
-                            <i class="fas fa-folder"></i>
-                            My Files
-                        </a>
-                    `;
-                } catch (e) {
-                    localStorage.removeItem("token");
-                    updateNavigation();
-                }
-            } else {
                 navActions.innerHTML = `
-                    <a href="/login" class="btn-hero btn-hero-secondary">
+                    <div class="user-profile">
+                        <div class="user-avatar">${userInitial}</div>
+                        <div class="user-info">
+                            <div class="user-name">${auth.username}</div>
+                            <div class="user-status">
+                                <span class="status-indicator"></span>
+                                <span>Online</span>
+                            </div>
+                        </div>
+                        <button class="btn-logout" onclick="logout()" title="Logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                `;
+
+                heroActions.innerHTML = `
+                    <a href="/upload" class="btn-hero btn-hero-primary animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        Upload File
+                    </a>
+                    <a href="/myfiles" class="btn-hero btn-hero-secondary animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+                        <i class="fas fa-folder"></i>
+                        My Files
+                    </a>
+                `;
+            } else {
+                // User is NOT logged in - show login/register buttons
+                navActions.innerHTML = `
+                    <a href="/login" class="btn-auth btn-login">
                         <i class="fas fa-sign-in-alt"></i>
                         Login
                     </a>
-                    <a href="/register" class="btn-hero btn-hero-primary">
+                    <a href="/register" class="btn-auth btn-register">
                         <i class="fas fa-user-plus"></i>
                         Register
                     </a>
@@ -809,96 +1033,63 @@
 
         function logout() {
             showMessage("Logging out...", "success");
+            localStorage.removeItem('token');
             setTimeout(() => {
-                localStorage.removeItem("token");
                 showMessage("Logged out successfully", "success");
-                setTimeout(() => {
-                    window.location.href = "/";
-                }, 1000);
+                updateNavigation();
+                window.location.href = "/";
             }, 500);
         }
 
-        function showMessage(text, type = "success") {
-            const msgBox = document.getElementById('msgBox');
-            msgBox.textContent = text;
-            msgBox.style.backgroundColor = type === "success" 
-                ? "rgba(46, 204, 113, 0.95)" 
-                : "rgba(231, 76, 60, 0.95)";
-            msgBox.style.display = "block";
+        // Mobile menu toggle
+        document.getElementById('menuToggle')?.addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            const toggleIcon = this.querySelector('i');
 
-            setTimeout(() => {
-                msgBox.style.opacity = "0";
-                msgBox.style.transform = "translateX(100%)";
-                setTimeout(() => {
-                    msgBox.style.display = "none";
-                    msgBox.style.opacity = "1";
-                    msgBox.style.transform = "translateX(0)";
-                }, 500);
-            }, 3000);
-        }
+            if (navLinks) {
+                navLinks.classList.toggle('show');
+                toggleIcon.classList.toggle('fa-bars');
+                toggleIcon.classList.toggle('fa-times');
+            }
+        });
 
-        // Scroll animations
-        function initScrollAnimations() {
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavigation();
+
+            // Update active nav link
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            // Add scroll animations
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        const element = entry.target;
-                        const animation = element.getAttribute('data-animate');
-                        const delay = element.getAttribute('data-delay') || 0;
-                        
-                        setTimeout(() => {
-                            element.classList.add('animate__animated', `animate__${animation}`);
-                        }, delay * 1000);
+                        entry.target.classList.add('animate__animated');
+                        if (entry.target.classList.contains('stat-card')) {
+                            entry.target.classList.add('animate__fadeInUp');
+                        }
                     }
                 });
-            }, {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            });
+            }, { threshold: 0.1 });
 
-            document.querySelectorAll('[data-animate]').forEach(el => {
+            document.querySelectorAll('.stat-card, .feature-card, .card').forEach(el => {
                 observer.observe(el);
             });
-        }
-
-        // Mobile menu
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            const navLinks = document.querySelector('.nav-links');
-            const toggleIcon = this.querySelector('i');
-            
-            navLinks.classList.toggle('show');
-            toggleIcon.classList.toggle('fa-bars');
-            toggleIcon.classList.toggle('fa-times');
         });
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
+        // Clear any old demo tokens on load
+        if (localStorage.getItem("demoUser")) {
+            localStorage.removeItem("demoUser");
+            localStorage.removeItem("token");
             updateNavigation();
-            initScrollAnimations();
-            
-            // Add hover effects
-            document.querySelectorAll('.card, .feature-card').forEach(card => {
-                card.addEventListener('mouseenter', () => {
-                    card.style.transform = 'translateY(-8px)';
-                });
-                
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = 'translateY(0)';
-                });
-            });
-
-            // Keyboard shortcuts
-            document.addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.key === 'u') {
-                    e.preventDefault();
-                    window.location.href = '/upload';
-                }
-                if (e.ctrlKey && e.key === 'f') {
-                    e.preventDefault();
-                    window.location.href = '/myfiles';
-                }
-            });
-        });
+        }
     </script>
 </body>
 </html>
