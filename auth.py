@@ -5,9 +5,10 @@ from datetime import datetime, timedelta
 from models import create_user, get_user_by_email
 from utils import SECRET_KEY, JWT_ALGORITHM
 
-auth_bp = Blueprint("auth_bp", __name__)
+auth_bp = Blueprint("auth_bp", __name__, url_prefix="/api")
 
-@auth_bp.route("/api/register", methods=["POST"])
+
+@auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json() or {}
     username = data.get('username')
@@ -25,7 +26,7 @@ def register():
     return jsonify({"message": "User registered successfully"}), 201
 
 
-@auth_bp.route("/api/login", methods=["POST"])
+@auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json() or {}
     email = data.get('email')
@@ -35,15 +36,22 @@ def login():
         return jsonify({"error": "Missing credentials"}), 400
 
     user = get_user_by_email(email)
-    if not user or not check_password_hash(user.get("password",""), password):
+    if not user or not check_password_hash(user.get("password", ""), password):
         return jsonify({"error": "Invalid credentials"}), 401
 
+    # Create token with 7-day expiration and include username
     payload = {
         "user_id": str(user["_id"]),
-        "exp": datetime.utcnow() + timedelta(hours=5)
+        "username": user.get("username", "User"),
+        "exp": datetime.utcnow() + timedelta(days=7)  # 7 days expiration
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm=JWT_ALGORITHM)
+
     # PyJWT may return bytes in older versions; ensure string
     if isinstance(token, bytes):
         token = token.decode('utf-8')
-    return jsonify({"token": token}), 200
+
+    return jsonify({
+        "token": token,
+        "username": user.get("username", "User")
+    }), 200
