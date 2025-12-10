@@ -1,11 +1,19 @@
 # Secure File Hosting Web Application
 
-## Course
-COSC2956: Internet Tools
+## Setup Instructions:
+1. Clone repository
+2. Navigate to backend: `cd backend`
+3. Install dependencies: `pip install -r requirements.txt`
+4. Run: `python app.py`
+5. Open browser: `http://127.0.0.1:5000`
 
-## Description
-A secure full-stack web application that allows users to register, log in, upload, download, and delete files.  
-Files can be public (visible to all) or private (accessible via shareable link).  
+## Features:
+- User registration/login with JWT tokens
+- Secure file upload (PDF/MP4 up to 20MB)
+- Public/private file privacy settings
+- My Files dashboard with download/delete
+- Public Downloads page
+- JSON database (no external DB needed)
 
-## Project Structure
-
+## API Endpoints:
+(List all endpoints as above)
