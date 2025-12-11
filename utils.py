@@ -51,3 +51,8 @@ def generate_filename(filename):
     name, ext = os.path.splitext(base)
     ts = int(time.time())
     return f"{name}-{ts}{ext}"
+
+# Helper function for JavaScript compatibility
+def api_fetch_helper():
+    """This is a dummy function to help JavaScript"""
+    pass
