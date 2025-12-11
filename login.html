@@ -4,6 +4,34 @@
     <meta charset="UTF-8">
     <title>Login</title>
     <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        main {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .msg {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <main>
@@ -16,10 +44,18 @@
         </form>
 
         <p id="message" class="msg"></p>
-        <a href="/">Back to Home</a>
+        <p style="text-align: center; margin-top: 20px;">
+            Don't have an account? <a href="/register">Register here</a>
+        </p>
+        <p style="text-align: center; margin-top: 10px;">
+            <a href="/">Back to Home</a>
+        </p>
     </main>
 
     <script>
+        // Get API_URL from Flask context or use default
+        const API_URL = window.API_URL || "http://127.0.0.1:5000";
+
         const form = document.getElementById("loginForm");
         const msg = document.getElementById("message");
         const btn = form.querySelector("button");
@@ -28,6 +64,7 @@
             e.preventDefault();
 
             msg.innerText = "";
+            msg.style.color = "";
             btn.disabled = true;
             btn.innerText = "Loading...";
 
@@ -37,7 +74,7 @@
             };
 
             try {
-                const res = await fetch(`${API_URL}/login`, {
+                const res = await fetch(`${API_URL}/api/login`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data)
@@ -46,14 +83,23 @@
                 const result = await res.json();
 
                 if (res.ok) {
+                    msg.style.color = "green";
                     msg.innerText = "Login successful!";
-                    saveToken(result.token);
-                    setTimeout(() => { window.location.href = "/upload"; }, 800);
+
+                    // Save token
+                    localStorage.setItem("token", result.token);
+
+                    setTimeout(() => {
+                        window.location.href = "/";
+                    }, 1000);
                 } else {
-                    msg.innerText = result.error;
+                    msg.style.color = "red";
+                    msg.innerText = result.error || "Login failed";
                 }
             } catch (err) {
+                msg.style.color = "red";
                 msg.innerText = "Network error. Try again.";
+                console.error(err);
             }
 
             btn.disabled = false;
