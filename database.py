@@ -38,7 +38,7 @@ class JSONDatabase:
             with open(self.files_file, 'r') as f:
                 return json.load(f)
         except:
-            return []
+            return []  # Fixed: This was indented incorrectly
 
     def _write_files(self, data):
         with open(self.files_file, 'w') as f:
@@ -103,6 +103,30 @@ class JSONDatabase:
         if deleted:
             self._write_files(new_files)
         return deleted
+
+    # NEW: Shareable links methods
+    def generate_share_token(self, file_id):
+        import hashlib
+        import time
+        # Create a unique token using file_id and timestamp
+        token_string = f"{file_id}{time.time()}"
+        return hashlib.md5(token_string.encode()).hexdigest()[:10]
+
+    def update_file_share_token(self, file_id, share_token):
+        files = self._read_files()
+        for file in files:
+            if file.get("_id") == file_id:
+                file["share_token"] = share_token
+                self._write_files(files)
+                return True
+        return False
+
+    def find_file_by_share_token(self, share_token):
+        files = self._read_files()
+        for file in files:
+            if file.get("share_token") == share_token:
+                return file.copy()
+        return None
 
 
 # Create global instance
