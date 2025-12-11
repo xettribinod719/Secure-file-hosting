@@ -1,7 +1,8 @@
-from flask import Blueprint, request, jsonify, send_file
+from flask import Blueprint, request, jsonify, send_file, session
 from models import save_file, get_public_files, get_user_files, get_file_by_id, delete_file
 from utils import token_required, allowed_file, check_file_size, generate_filename
 import os
+from database import db  # Import the database instance
 
 # --------------------------
 # Upload folder setup
@@ -87,10 +88,82 @@ def download_file(file_id):
         if not file:
             return jsonify({"error": "File not found"}), 404
 
+        # Check access: either public, or user owns it, or has share token
+        is_public = file.get('privacy') == 'public'
+
+        # Check if user is logged in and owns the file
+        user_id = session.get('user_id')
+        is_owner = user_id and file.get('uploaded_by') == user_id
+
+        # Check for share token in query parameter
+        share_token = request.args.get('token')
+        has_valid_token = share_token and db.find_file_by_share_token(share_token)
+
+        if not (is_public or is_owner or has_valid_token):
+            return jsonify({"error": "Access denied"}), 403
+
         # Check if file exists
         if not os.path.exists(file["path"]):
             return jsonify({"error": "File not found on server"}), 404
 
+        return send_file(file["path"], as_attachment=True, download_name=file["filename"])
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# --------------------------
+# Generate shareable link for private file
+# --------------------------
+@file_bp.route("/files/<file_id>/share", methods=["POST"])
+@token_required
+def generate_share_link(user_id, file_id):
+    try:
+        file = get_file_by_id(file_id)
+        if not file:
+            return jsonify({"error": "File not found"}), 404
+
+        # Check if user owns the file
+        if file.get('uploaded_by') != user_id:
+            return jsonify({"error": "Not authorized"}), 403
+
+        # Check if file is private (only private files need share links)
+        if file.get('privacy') != 'private':
+            return jsonify({"error": "Only private files can have share links"}), 400
+
+        # Generate share token
+        share_token = db.generate_share_token(file_id)
+
+        # Save token to file
+        db.update_file_share_token(file_id, share_token)
+
+        # Create the shareable URL
+        base_url = request.host_url.rstrip('/')
+        share_url = f"{base_url}/shared/{share_token}"
+
+        return jsonify({
+            'share_url': share_url,
+            'message': 'Share link created successfully'
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# --------------------------
+# Access shared file via token
+# --------------------------
+@file_bp.route("/shared/<share_token>", methods=["GET"])
+def shared_file_download(share_token):
+    try:
+        # Find file by share token
+        file = db.find_file_by_share_token(share_token)
+        if not file:
+            return "File not found or link expired", 404
+
+        # Check if file exists
+        if not os.path.exists(file["path"]):
+            return "File not found on server", 404
+
+        # Serve the file
         return send_file(file["path"], as_attachment=True, download_name=file["filename"])
     except Exception as e:
         return jsonify({"error": str(e)}), 500
