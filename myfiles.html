@@ -60,6 +60,12 @@
     .btn-download:hover {
         background: #27ae60;
     }
+    .btn-share {
+        background: #9b59b6;
+    }
+    .btn-share:hover {
+        background: #8e44ad;
+    }
     .files-table {
         width: 100%;
         background: white;
@@ -109,6 +115,42 @@
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
+    }
+    /* Modal styles for share link */
+    .share-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+    .share-modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .share-link-box {
+        background: #f8fafc;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px 0;
+        word-break: break-all;
+        font-family: monospace;
+        border: 2px solid #e2e8f0;
+    }
+    .share-modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
     }
   </style>
 </head>
@@ -280,12 +322,19 @@
                 <td>${privacyBadge}</td>
                 <td>${formatDate(file.uploaded_at)}</td>
                 <td>
-                    <button onclick="downloadFile('${file._id}')" class="btn-download btn" style="padding: 6px 12px; font-size: 14px;">
-                        <i class="fas fa-download"></i> Download
-                    </button>
-                    <button onclick="deleteFile('${file._id}', '${file.filename}')" class="btn-delete btn" style="padding: 6px 12px; font-size: 14px;">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button onclick="downloadFile('${file._id}')" class="btn-download btn" style="padding: 6px 12px; font-size: 14px;">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                        ${file.privacy === 'private' ? `
+                        <button onclick="generateShareLink('${file._id}', '${file.filename}')" class="btn-share btn" style="padding: 6px 12px; font-size: 14px;">
+                            <i class="fas fa-share-alt"></i> Share
+                        </button>
+                        ` : ''}
+                        <button onclick="deleteFile('${file._id}', '${file.filename}')" class="btn-delete btn" style="padding: 6px 12px; font-size: 14px;">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
                 </td>
             `;
             filesList.appendChild(row);
@@ -295,6 +344,93 @@
     // Download file
     async function downloadFile(fileId) {
         window.open(`${API_URL}/api/files/${fileId}/download`, '_blank');
+    }
+
+    // Generate share link for private file
+    async function generateShareLink(fileId, filename) {
+        const token = getToken();
+        if (!token) {
+            showError("Please login to generate share links");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/api/files/${fileId}/share`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                showShareModal(result.share_url, filename);
+            } else {
+                alert(result.error || "Failed to generate share link");
+            }
+        } catch (error) {
+            console.error("Error generating share link:", error);
+            alert("Network error. Please try again.");
+        }
+    }
+
+    // Show share modal with link
+    function showShareModal(shareUrl, filename) {
+        const modal = document.createElement("div");
+        modal.className = "share-modal";
+        modal.innerHTML = `
+            <div class="share-modal-content">
+                <h2><i class="fas fa-link"></i> Shareable Link</h2>
+                <p>Share this link with others to allow them to download <strong>"${filename}"</strong>:</p>
+                <div class="share-link-box">${shareUrl}</div>
+                <p style="color: #666; font-size: 14px;">
+                    <i class="fas fa-info-circle"></i> Anyone with this link can download the file (no login required)
+                </p>
+                <div class="share-modal-actions">
+                    <button onclick="copyToClipboard('${shareUrl}')" class="btn" style="background: #4a90e2;">
+                        <i class="fas fa-copy"></i> Copy Link
+                    </button>
+                    <button onclick="closeModal(this)" class="btn" style="background: #64748b;">
+                        Close
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Close modal when clicking outside
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal(modal);
+            }
+        });
+    }
+
+    // Close modal
+    function closeModal(modalElement) {
+        const modal = modalElement.closest ? modalElement.closest('.share-modal') : modalElement;
+        if (modal) {
+            document.body.removeChild(modal);
+        }
+    }
+
+    // Copy text to clipboard
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Share link copied to clipboard!');
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert('Share link copied to clipboard!');
+        });
     }
 
     // Delete file
