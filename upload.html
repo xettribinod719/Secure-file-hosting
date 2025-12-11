@@ -1,94 +1,305 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Upload File</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <style>
-        #message.success { color: green; }
-        #message.error { color: red; }
-    </style>
+  <meta charset="utf-8">
+  <title>Upload File</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    body {
+        padding: 20px;
+        background: #f5f7fa;
+    }
+    .upload-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 30px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    .upload-area {
+        border: 2px dashed #4a90e2;
+        border-radius: 10px;
+        padding: 40px;
+        text-align: center;
+        margin: 20px 0;
+        background: #f8fafc;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .upload-area:hover {
+        background: #edf2f7;
+        border-color: #357ae8;
+    }
+    .upload-area.dragover {
+        background: #e3f2fd;
+        border-color: #1a73e8;
+    }
+    .file-info {
+        background: #f1f5f9;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 15px 0;
+    }
+    .btn {
+        padding: 12px 24px;
+        background: #4a90e2;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .btn:hover {
+        background: #357ae8;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(53, 122, 232, 0.3);
+    }
+    .btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+    }
+    .message {
+        padding: 12px;
+        border-radius: 8px;
+        margin: 15px 0;
+        display: none;
+    }
+    .success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    .error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+  </style>
 </head>
 <body>
-    <h1>Upload File</h1>
+  <div class="upload-container">
+    <h1 style="text-align: center; margin-bottom: 30px; color: #333;">
+      <i class="fas fa-cloud-upload-alt" style="color: #4a90e2;"></i> Upload File
+    </h1>
 
-    <form id="uploadForm" enctype="multipart/form-data">
-        <label>
-            Select File:
-            <input type="file" name="file" id="fileInput" required>
+    <form id="uploadForm">
+      <!-- File Input -->
+      <div class="upload-area" id="dropZone">
+        <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #4a90e2; margin-bottom: 15px;"></i>
+        <h3>Drag & Drop your file here</h3>
+        <p style="color: #666; margin: 10px 0;">or click to select file</p>
+        <p style="color: #888; font-size: 14px;">Supported: PDF, MP4 (Max 20MB)</p>
+        <input type="file" name="file" id="fileInput" style="display: none;" required>
+      </div>
+
+      <!-- Selected File Info -->
+      <div id="fileInfo" class="file-info" style="display: none;">
+        <h4>Selected File:</h4>
+        <p id="fileName"></p>
+        <p id="fileSize"></p>
+      </div>
+
+      <!-- Privacy Setting -->
+      <div style="margin: 20px 0;">
+        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333;">
+          <i class="fas fa-lock"></i> Privacy Setting:
         </label>
-        <br>
+        <select name="privacy" id="privacySelect" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd;">
+          <option value="private">Private (Only you can access)</option>
+          <option value="public">Public (Everyone can download)</option>
+        </select>
+      </div>
 
-        <label>
-            Privacy:
-            <select name="privacy">
-                <option value="private">Private</option>
-                <option value="public">Public</option>
-            </select>
-        </label>
-        <br>
+      <!-- Upload Button -->
+      <button type="submit" id="uploadBtn" class="btn" style="width: 100%;">
+        <i class="fas fa-upload"></i> Upload File
+      </button>
 
-        <button type="submit" id="uploadBtn">Upload</button>
+      <!-- Loading Indicator -->
+      <div id="loading" style="text-align: center; margin: 20px 0; display: none;">
+        <div class="loading-spinner" style="width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top: 3px solid #4a90e2; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+        <p style="margin-top: 10px; color: #666;">Uploading...</p>
+      </div>
+
+      <!-- Message Display -->
+      <div id="message" class="message"></div>
     </form>
 
-    <p id="message"></p>
-    <a href="/myfiles">My Files</a> | <a href="/">Home</a>
+    <!-- Navigation -->
+    <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+      <a href="/myfiles" style="color: #4a90e2; text-decoration: none; margin: 0 10px;">
+        <i class="fas fa-folder"></i> My Files
+      </a>
+      <span style="color: #ccc;">|</span>
+      <a href="/" style="color: #4a90e2; text-decoration: none; margin: 0 10px;">
+        <i class="fas fa-home"></i> Home
+      </a>
+    </div>
+  </div>
 
-    <script>
-        const form = document.getElementById("uploadForm");
+  <script>
+    const API_URL = "http://127.0.0.1:5000";
+
+    // Get token from localStorage
+    function getToken() {
+        return localStorage.getItem("token");
+    }
+
+    // Show message
+    function showMessage(text, type = "error") {
         const msg = document.getElementById("message");
-        const fileInput = document.getElementById("fileInput");
-        const uploadBtn = document.getElementById("uploadBtn");
+        msg.textContent = text;
+        msg.className = `message ${type}`;
+        msg.style.display = "block";
 
-        const MAX_SIZE = 20 * 1024 * 1024;
-        const ALLOWED = ["image/", "application/pdf", "application/zip"];
+        setTimeout(() => {
+            msg.style.display = "none";
+        }, 5000);
+    }
 
-        function setMessage(text, success = false) {
-            msg.innerText = text;
-            msg.className = success ? "success" : "error";
+    // Update file info display
+    document.getElementById("fileInput").addEventListener("change", function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            document.getElementById("fileInfo").style.display = "block";
+            document.getElementById("fileName").textContent = `Name: ${file.name}`;
+            document.getElementById("fileSize").textContent = `Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+        }
+    });
 
-            setTimeout(() => { msg.innerText = ""; msg.className = ""; }, 4000);
+    // Drag and drop functionality
+    const dropZone = document.getElementById("dropZone");
+    const fileInput = document.getElementById("fileInput");
+
+    dropZone.addEventListener("click", () => fileInput.click());
+
+    dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.classList.add("dragover");
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+        dropZone.classList.remove("dragover");
+    });
+
+    dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("dragover");
+
+        if (e.dataTransfer.files.length) {
+            fileInput.files = e.dataTransfer.files;
+            const event = new Event('change');
+            fileInput.dispatchEvent(event);
+        }
+    });
+
+    // Handle form submission
+    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // Check if user is logged in
+        const token = getToken();
+        if (!token) {
+            showMessage("Please login first", "error");
+            setTimeout(() => window.location.href = "/login", 1500);
+            return;
         }
 
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
+        // Check if file is selected
+        const fileInput = document.getElementById("fileInput");
+        if (!fileInput.files.length) {
+            showMessage("Please select a file", "error");
+            return;
+        }
 
-            const file = fileInput.files[0];
-            if (!file) return setMessage("Please select a file.");
+        const file = fileInput.files[0];
 
-            if (file.size > MAX_SIZE) return setMessage("File too large! Max 20MB allowed.");
+        // Validate file type
+        const allowedTypes = ['application/pdf', 'video/mp4'];
+        const fileExt = file.name.split('.').pop().toLowerCase();
+        if (!['pdf', 'mp4'].includes(fileExt)) {
+            showMessage("Only PDF and MP4 files are allowed", "error");
+            return;
+        }
 
-            if (!ALLOWED.some(type => file.type.startsWith(type)))
-                return setMessage("File type not allowed.");
+        // Validate file size (20MB)
+        if (file.size > 20 * 1024 * 1024) {
+            showMessage("File size exceeds 20MB limit", "error");
+            return;
+        }
 
-            const token = getToken();
-            if (!token) {
-                alert("Login required");
-                window.location.href = "/login";
-                return;
-            }
+        // Show loading
+        const uploadBtn = document.getElementById("uploadBtn");
+        const loading = document.getElementById("loading");
+        uploadBtn.disabled = true;
+        loading.style.display = "block";
 
-            uploadBtn.disabled = true;
-            setMessage("Uploading...", true);
+        // Prepare form data
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("privacy", document.getElementById("privacySelect").value);
 
-            const data = new FormData(form);
-
-            const res = await fetch(`${API_URL}/upload`, {
+        try {
+            const response = await fetch(`${API_URL}/api/upload`, {
                 method: "POST",
-                headers: { "Authorization": token },
-                body: data
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
+                body: formData
             });
 
-            uploadBtn.disabled = false;
+            const result = await response.json();
 
-            const result = await res.json();
-            setMessage(res.ok ? result.message : result.error, res.ok);
+            if (response.ok) {
+                showMessage(result.message || "File uploaded successfully!", "success");
 
-            if (res.ok) {
+                // Reset form
+                fileInput.value = "";
+                document.getElementById("fileInfo").style.display = "none";
+
+                // Redirect to my files after 2 seconds
                 setTimeout(() => {
                     window.location.href = "/myfiles";
                 }, 2000);
+            } else {
+                showMessage(result.error || "Upload failed", "error");
             }
-        });
-    </script>
+        } catch (error) {
+            console.error("Upload error:", error);
+            showMessage("Network error. Please try again.", "error");
+        } finally {
+            uploadBtn.disabled = false;
+            loading.style.display = "none";
+        }
+    });
+
+    // Check login status on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        const token = getToken();
+        if (!token) {
+            showMessage("Please login to upload files", "error");
+            setTimeout(() => {
+                window.location.href = "/login";
+            }, 2000);
+        }
+    });
+
+    // Loading spinner animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+  </script>
 </body>
 </html>
