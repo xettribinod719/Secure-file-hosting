@@ -3,22 +3,75 @@
 <head>
     <title>Register</title>
     <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        main {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        #message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .error {
+            color: #d32f2f;
+            background-color: #ffebee;
+            border: 1px solid #ffcdd2;
+        }
+        .success {
+            color: #388e3c;
+            background-color: #e8f5e9;
+            border: 1px solid #c8e6c9;
+        }
+    </style>
 </head>
 <body>
-    <h1>Register</h1>
 
-    <form id="registerForm">
-        <input type="text" name="username" placeholder="Username" required minlength="3"><br>
-        <input type="email" name="email" placeholder="Email" required autocomplete="email"><br>
-        <input type="password" name="password" placeholder="Password (min 6 chars, 1 number)" required minlength="6" autocomplete="new-password"><br>
-        <button type="submit" id="submitBtn">Register</button>
-        <div id="loader" style="display:none;">Processing...</div>
-    </form>
+    <main>
+        <h1>Register</h1>
 
-    <p id="message" style="font-weight:bold;"></p>
-    <a href="/">Back to Home</a>
+        <form id="registerForm">
+            <input class="input-field" type="text" name="username" placeholder="Username" required minlength="3"><br>
+            <input class="input-field" type="email" name="email" placeholder="Email" required autocomplete="email"><br>
+            <input class="input-field" type="password" name="password" placeholder="Password (min 6 chars, 1 number)" required minlength="6" autocomplete="new-password"><br>
+            <button class="primary-btn" type="submit" id="submitBtn">Register</button>
+            <div id="loader" style="display:none; text-align: center; margin-top: 10px;">
+                <div style="display: inline-block; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+                    Processing...
+                </div>
+            </div>
+        </form>
+
+        <div id="message"></div>
+        <p style="text-align: center; margin-top: 20px;">
+            Already have an account? <a href="/login">Login here</a>
+        </p>
+        <p style="text-align: center; margin-top: 10px;">
+            <a href="/">Back to Home</a>
+        </p>
+    </main>
 
     <script>
+        // Get API_URL from Flask context or use default
+        const API_URL = "http://127.0.0.1:5000";
+
         const form = document.getElementById("registerForm");
         const msg = document.getElementById("message");
         const loader = document.getElementById("loader");
@@ -28,12 +81,22 @@
             return /[0-9]/.test(pass) && pass.length >= 6;
         }
 
+        function showMessage(text, type = "error") {
+            msg.innerHTML = `<div class="${type}">${text}</div>`;
+            msg.style.display = "block";
+        }
+
+        function hideMessage() {
+            msg.style.display = "none";
+            msg.innerHTML = "";
+        }
+
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
+            hideMessage();
 
             if (!isValidPassword(form.password.value)) {
-                msg.style.color = "red";
-                msg.innerText = "Password must contain at least 6 characters and 1 number.";
+                showMessage("Password must contain at least 6 characters and 1 number.", "error");
                 return;
             }
 
@@ -46,32 +109,63 @@
                 password: form.password.value
             };
 
-            const res = await fetch(`${API_URL}/register`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
-            });
+            console.log("Sending registration request to:", `${API_URL}/api/register`);
+            console.log("Data:", data);
 
-            const result = await res.json();
+            try {
+                const response = await fetch(`${API_URL}/api/register`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                });
 
-            loader.style.display = "none";
-            btn.disabled = false;
+                console.log("Response status:", response.status);
 
-            if (res.ok) {
-                msg.style.color = "green";
-                msg.innerText = result.message + " Redirecting...";
-                form.reset();
+                let result;
+                try {
+                    result = await response.json();
+                    console.log("Response data:", result);
+                } catch (jsonError) {
+                    console.log("JSON parse error:", jsonError);
+                    result = { error: "Server returned invalid response" };
+                }
 
-                setTimeout(() => {
-                    window.location.href = "/login";
-                }, 1500);
+                if (response.ok) {
+                    showMessage(result.message + " Redirecting to login...", "success");
+                    form.reset();
 
-            } else {
-                msg.style.color = "red";
-                msg.innerText = result.error;
+                    setTimeout(() => {
+                        window.location.href = "/login";
+                    }, 2000);
+                } else {
+                    showMessage(result.error || "Registration failed. Please try again.", "error");
+                }
+            } catch (error) {
+                console.error("Network error:", error);
+                showMessage(`Network error: ${error.message}. Make sure the server is running at ${API_URL}`, "error");
+            } finally {
+                btn.disabled = false;
+                loader.style.display = "none";
+            }
+        });
+
+        // Test server connection on page load
+        window.addEventListener('load', async () => {
+            try {
+                const testResponse = await fetch(`${API_URL}/api/public-files`);
+                if (testResponse.ok) {
+                    console.log("Server connection OK");
+                } else {
+                    console.warn("Server responded with error:", testResponse.status);
+                }
+            } catch (error) {
+                console.error("Cannot connect to server:", error);
+                showMessage(`Cannot connect to server at ${API_URL}. Make sure the backend is running.`, "error");
             }
         });
     </script>
 </body>
 </html>
-
