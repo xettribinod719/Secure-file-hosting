@@ -6,104 +6,249 @@
     <title>Public Downloads</title>
     <link rel="stylesheet" href="/static/style.css">
     <style>
-      /* local fallback styles if static/style.css missing */
-      .container{max-width:960px;margin:24px auto;padding:16px}
-      table{width:100%;border-collapse:collapse;margin-top:12px}
-      th,td{padding:10px;border:1px solid #ddd;text-align:left}
-      .btn{display:inline-block;padding:6px 10px;background:#1976d2;color:#fff;text-decoration:none;border-radius:4px}
-      .download-btn{background:#2e7d32}
-      .error{color:#b00020}
-      .controls{margin-top:12px;display:flex;gap:8px;align-items:center}
+        body {
+            padding: 20px;
+            background: #f5f7fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .files-table {
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .files-table th {
+            background: #f8fafc;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .files-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .files-table tr:hover {
+            background: #f8fafc;
+        }
+        .btn {
+            padding: 8px 16px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #357ae8;
+            transform: translateY(-2px);
+        }
+        .btn-download {
+            background: #2ecc71;
+        }
+        .btn-download:hover {
+            background: #27ae60;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+        .empty-state i {
+            font-size: 48px;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4a90e2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Public Downloads</h1>
-
-        <div class="controls">
-            <button id="refreshBtn" class="btn" aria-label="Refresh file list">Refresh</button>
-            <p id="loadingText" aria-live="polite" style="margin:0 0 0 8px">Initializing...</p>
+        <div class="header">
+            <h1><i class="fas fa-download"></i> Public Downloads</h1>
+            <p style="color: #64748b; margin: 10px 0 20px;">Browse and download files shared publicly by users</p>
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+                <a href="/" class="btn">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <button onclick="loadPublicFiles()" class="btn" style="background: #8b5cf6;">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
         </div>
 
-        <div id="error" role="alert" class="error" style="display:none"></div>
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading public files...</p>
+        </div>
 
-        <table id="downloadsTable" role="table" aria-describedby="loadingText">
-            <thead>
-                <tr>
-                    <th scope="col">Filename</th>
-                    <th scope="col">Uploader</th>
-                    <th scope="col">Uploaded At</th>
-                    <th scope="col">Action</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <p id="emptyState" style="display:none;">No public files available at the moment.</p>
-        <a class="btn" href="/">Home</a>
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <i class="fas fa-inbox"></i>
+            <h3>No public files available</h3>
+            <p>Check back later for publicly shared files</p>
+        </div>
+
+        <!-- Files Table -->
+        <div id="filesTable" style="display: none;">
+            <table class="files-table">
+                <thead>
+                    <tr>
+                        <th>Filename</th>
+                        <th>Size</th>
+                        <th>Uploaded By</th>
+                        <th>Uploaded At</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="filesList"></tbody>
+            </table>
+        </div>
     </div>
 
     <script>
-        const API_URL = window.API_URL || '';
+        const API_URL = "http://127.0.0.1:5000";
 
-        function showError(msg){
-            const err = document.getElementById('error');
-            err.innerText = msg;
-            err.style.display = 'block';
+        // Format file size
+        function formatFileSize(bytes) {
+            if (!bytes) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
-        let refreshTimer = null;
-        function debounceLoad(ms=500){
-            if(refreshTimer) clearTimeout(refreshTimer);
-            refreshTimer = setTimeout(()=> loadDownloads(), ms);
-        }
-
-        async function loadDownloads() {
-            const loadingEl = document.getElementById("loadingText");
-            loadingEl.innerText = "Loading files...";
-            document.getElementById('error').style.display='none';
+        // Format date
+        function formatDate(dateString) {
             try {
-                const res = await fetch(`${API_URL}/public-files`);
-                if(!res.ok) throw new Error('Network response was not ok');
-                const files = await res.json();
-
-                const tbody = document.querySelector("#downloadsTable tbody");
-                tbody.innerHTML = "";
-                document.getElementById("emptyState").style.display = files.length ? 'none' : 'block';
-
-                files.forEach(f => {
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td>${escapeHtml(f.filename)}</td>
-                        <td>${escapeHtml(f.uploaded_by || '—')}</td>
-                        <td>${new Date(f.uploaded_at).toLocaleString()}</td>
-                        <td>
-                            <a class="btn download-btn" role="button" tabindex="0" href="${API_URL}/files/${f._id}/download" aria-label="Download ${escapeHtml(f.filename)}">Download</a>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            } catch (err) {
-                showError('Failed to load files. ' + err.message);
-            } finally {
-                loadingEl.innerText = "";
+                const date = new Date(dateString);
+                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            } catch (e) {
+                return 'Unknown';
             }
         }
 
-        function escapeHtml(s) {
-            if(!s) return '';
-            return s.replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m]; });
+        // Load public files
+        async function loadPublicFiles() {
+            const loadingState = document.getElementById("loadingState");
+            const emptyState = document.getElementById("emptyState");
+            const filesTable = document.getElementById("filesTable");
+
+            loadingState.style.display = "block";
+            emptyState.style.display = "none";
+            filesTable.style.display = "none";
+
+            try {
+                const response = await fetch(`${API_URL}/api/public-files`);
+                const files = await response.json();
+
+                if (response.ok) {
+                    displayPublicFiles(files);
+                } else {
+                    showError("Failed to load files: " + (files.error || "Unknown error"));
+                }
+            } catch (error) {
+                console.error("Error loading public files:", error);
+                showError("Network error. Please try again.");
+            }
         }
 
-        document.addEventListener('keydown', function(e){
-            if(e.key === 'Enter' && document.activeElement.classList.contains('download-btn')){
-                document.activeElement.click();
+        // Display public files
+        function displayPublicFiles(files) {
+            const loadingState = document.getElementById("loadingState");
+            const emptyState = document.getElementById("emptyState");
+            const filesTable = document.getElementById("filesTable");
+            const filesList = document.getElementById("filesList");
+
+            loadingState.style.display = "none";
+
+            if (!files || files.length === 0) {
+                emptyState.style.display = "block";
+                return;
             }
-        });
 
-        document.getElementById('refreshBtn').addEventListener('click', ()=> debounceLoad(200));
+            filesTable.style.display = "block";
+            filesList.innerHTML = "";
 
-        // initial load
-        loadDownloads();
+            files.forEach(file => {
+                const ext = file.filename.split('.').pop().toLowerCase();
+                const icon = ext === 'pdf' ? 'fas fa-file-pdf text-red-500' :
+                            ext === 'mp4' ? 'fas fa-file-video text-purple-500' :
+                            'fas fa-file text-gray-500';
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>
+                        <i class="${icon}" style="margin-right: 10px;"></i>
+                        ${file.filename}
+                    </td>
+                    <td>${formatFileSize(file.size)}</td>
+                    <td>${file.uploaded_by ? file.uploaded_by.substring(0, 8) + '...' : 'Unknown'}</td>
+                    <td>${formatDate(file.uploaded_at)}</td>
+                    <td>
+                        <a href="${API_URL}/api/files/${file._id}/download" class="btn-download btn">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                    </td>
+                `;
+                filesList.appendChild(row);
+            });
+        }
+
+        // Show error
+        function showError(message) {
+            const loadingState = document.getElementById("loadingState");
+            loadingState.innerHTML = `
+                <div style="color: #e74c3c;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 20px;"></i>
+                    <h3>Error Loading Files</h3>
+                    <p>${message}</p>
+                    <button onclick="loadPublicFiles()" class="btn" style="margin-top: 20px;">
+                        <i class="fas fa-redo"></i> Try Again
+                    </button>
+                </div>
+            `;
+        }
+
+        // Load files on page load
+        document.addEventListener('DOMContentLoaded', loadPublicFiles);
     </script>
 </body>
 </html>
