@@ -1,8 +1,9 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, send_file, jsonify
 from flask_cors import CORS  # Add this import
 import os
 from file_routes import file_bp
 from auth import auth_bp
+from database import db  # Import the database
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
@@ -25,35 +26,62 @@ CORS(app, supports_credentials=True)
 app.register_blueprint(file_bp)
 app.register_blueprint(auth_bp)
 
+
 # Add these routes to connect HTML templates
 @app.route("/")
 def home():
     return render_template("index.html")
 
+
 @app.route("/login")
 def login_page():
     return render_template("login.html")
+
 
 @app.route("/register")
 def register_page():
     return render_template("register.html")
 
+
 @app.route("/upload")
 def upload_page():
     return render_template("upload.html")
+
 
 @app.route("/myfiles")
 def myfiles_page():
     return render_template("myfiles.html")
 
+
 @app.route("/downloads")
 def downloads_page():
     return render_template("downloads.html")
+
+
+# IMPORTANT: Add this route for shareable links (NO authentication required)
+@app.route("/shared/<share_token>")
+def shared_file_download(share_token):
+    try:
+        # Find file by share token
+        file = db.find_file_by_share_token(share_token)
+        if not file:
+            return jsonify({"error": "File not found or link expired"}), 404
+
+        # Check if file exists
+        if not os.path.exists(file["path"]):
+            return jsonify({"error": "File not found on server"}), 404
+
+        # Serve the file - NO AUTHENTICATION REQUIRED
+        return send_file(file["path"], as_attachment=True, download_name=file["filename"])
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 # Global variable for frontend API URL
 @app.context_processor
 def inject_api_url():
     return dict(API_URL="http://127.0.0.1:5000")
+
 
 if __name__ == "__main__":
     # Run in debug for development; when running in PyCharm, this runs the dev server
